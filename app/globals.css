@@ -2,11 +2,9 @@
 
 :root {
   --brand: 24 94% 50%;
-  --bg: 0 0% 100%;
-  --text: 222 47% 11%;
 }
 
-.dark {
-  --bg: 222 47% 11%;
-  --text: 0 0% 100%;
+.dark body {
+  background-color: #09090b;
+  color: #fafafa;
 }

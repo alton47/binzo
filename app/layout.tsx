@@ -7,7 +7,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-[hsl(var(--bg))] text-[hsl(var(--text))]">
+      <body className="min-h-screen bg-white text-zinc-900 antialiased">
         {children}
       </body>
     </html>
