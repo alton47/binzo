@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { Product } from "@/lib/types";
-import { CategorySidebar } from "@/components/seller/CategorySideBar";
+import CategorySidebar from "@/components/seller/CategorySideBar";
 import ProductSkeleton from "@/components/seller/ProductSkeleton";
-import { SearchBar } from "@/components/seller/SearchBar";
-import { ProductCard } from "@/components/seller/ProductCard";
+import SearchBar from "@/components/seller/SearchBar";
+import ProductCard from "@/components/seller/ProductCard";
 
 export default function SellPage() {
   const [products, setProducts] = useState<Product[]>([]);
