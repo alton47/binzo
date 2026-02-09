@@ -1,16 +1,17 @@
 "use client";
+import { useEffect } from "react";
 import { supabase } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const login = async () => {
-    await supabase.auth.signInWithOtp({
-      email: "test@example.com",
-    });
-  };
+  const router = useRouter();
 
-  return (
-    <button onClick={login} className="px-4 py-2 bg-brand text-black rounded">
-      Login Test
-    </button>
-  );
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) router.push("/login");
+      else router.push("/sell");
+    });
+  }, []);
+
+  return null;
 }
