@@ -1,4 +1,4 @@
-import Sidebar from "@/components/dashboard/SideBar";
+import Sidebar from "@/components/dashboard/Sidebar";
 import Skeleton from "@/components/ui/Skeleton";
 
 export default function DashboardPage() {
