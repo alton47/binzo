@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function Sidebar() {
+export default function SideBar() {
   return (
     <aside className="w-60 bg-white border-r p-4 hidden md:block">
       <nav className="space-y-2 text-sm">
