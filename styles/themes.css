@@ -1,0 +1,12 @@
+:root {
+  --brand: 24 94% 50%;
+  --radius: 14px;
+}
+
+.bg-brand {
+  background-color: hsl(var(--brand));
+}
+
+.text-brand {
+  color: hsl(var(--brand));
+}
