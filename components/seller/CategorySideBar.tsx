@@ -1,11 +1,22 @@
-export function CategorySidebar({ categories, onSelect }: any) {
+"use client";
+
+const categories = ["All", "Drinks", "Snacks", "Food", "Other"];
+
+export default function CategorySidebar({
+  active,
+  onSelect,
+}: {
+  active: string;
+  onSelect: (c: string) => void;
+}) {
   return (
-    <div className="hidden md:block w-40 space-y-2">
-      {categories.map((c: string) => (
+    <div className="space-y-1">
+      {categories.map((c) => (
         <button
           key={c}
           onClick={() => onSelect(c)}
-          className="w-full text-left px-3 py-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          className={`w-full rounded-xl px-4 py-2 text-left text-sm transition
+            ${active === c ? "bg-brand text-white" : "hover:bg-zinc-100"}`}
         >
           {c}
         </button>
