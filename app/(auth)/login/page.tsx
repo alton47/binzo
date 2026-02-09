@@ -23,7 +23,7 @@ export default function LoginPage() {
 
         <button
           onClick={login}
-          className="w-full bg-brand text-white py-2 rounded"
+          className="w-full bg-brand text-black py-2 rounded"
         >
           Send magic link
         </button>
