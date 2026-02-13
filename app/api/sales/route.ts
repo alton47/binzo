@@ -7,23 +7,15 @@ export async function POST(req: Request) {
   const supabase = createSupabaseServerClient();
   const { product_id, quantity } = await req.json();
 
-  // atomic stock reduction
-  const { error: stockError } = await supabase.rpc("sell_product_atomic", {
+  const { error } = await supabase.rpc("sell_product_atomic", {
     p_product_id: product_id,
     p_quantity: quantity,
+    p_sold_by: user.id,
   });
 
-  if (stockError) throw stockError;
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
 
-  const { data } = await supabase
-    .from("sales")
-    .insert({
-      product_id,
-      quantity,
-      sold_by: user.id,
-    })
-    .select()
-    .single();
-
-  return NextResponse.json(data);
+  return NextResponse.json({ success: true });
 }
