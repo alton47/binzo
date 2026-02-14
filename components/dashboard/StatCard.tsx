@@ -9,7 +9,7 @@ export default function StatCard({
 }) {
   return (
     <Card>
-      <p className="text-sm text-[var(--text-secondary)]">{title}</p>
+      <p className="text-sm `text-(--text-secondary)`">{title}</p>
       <p className="text-2xl font-semibold mt-2">{value}</p>
     </Card>
   );
