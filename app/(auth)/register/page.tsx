@@ -1,5 +1,5 @@
 "use client";
 
-import LoginPage from "../login/page.tsx";
+import LoginPage from "../login/page";
 
 export default LoginPage;
