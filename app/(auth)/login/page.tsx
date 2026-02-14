@@ -69,7 +69,7 @@ export default function LoginPage() {
         {state === "success" ? (
           <>
             <h2 className="text-xl font-semibold mb-4">Check your email</h2>
-            <p className="text-[var(--text-secondary)]">{message}</p>
+            <p className="`text-var(--text-secondary)`">{message}</p>
           </>
         ) : state === "error" ? (
           <>
@@ -86,7 +86,7 @@ export default function LoginPage() {
           <>
             <h1 className="text-2xl font-semibold mb-2">Welcome</h1>
 
-            <p className="text-sm text-[var(--text-secondary)] mb-8">
+            <p className="text-sm `text-var(--text-secondary)` mb-8">
               Enter your email to sign in
             </p>
 
