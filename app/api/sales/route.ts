@@ -4,7 +4,9 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function POST(req: Request) {
   const user = await requireUser();
-  const supabase = createSupabaseServerClient();
+
+  const supabase = await createSupabaseServerClient();
+
   const { product_id, quantity } = await req.json();
 
   const { error } = await supabase.rpc("sell_product_atomic", {
