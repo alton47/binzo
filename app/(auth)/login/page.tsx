@@ -1,124 +1,74 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createSupabaseBrowserClient } from "@/lib/supabase/client";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
-  const supabase = createSupabaseBrowserClient();
-  const router = useRouter();
-
   const [email, setEmail] = useState("");
-  const [state, setState] = useState<"idle" | "loading" | "success" | "error">(
-    "idle",
-  );
-  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState("");
+  const supabase = createClient();
 
-  useEffect(() => {
-    const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        router.push("/dashboard");
-      }
-    };
-    checkSession();
-  }, []);
-
-  const handleEmailLogin = async (e: React.FormEvent) => {
+  const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
-
-    setState("loading");
-    setMessage("");
-
+    setLoading(true);
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: {
-        emailRedirectTo: window.location.origin + "/dashboard",
-      },
+      options: { emailRedirectTo: `${window.location.origin}/dashboard` },
     });
-
-    if (error) {
-      setState("error");
-      if (error.status === 429) {
-        setMessage("Too many attempts. Try again in a few minutes.");
-      } else {
-        setMessage("Something went wrong. Try again.");
-      }
-    } else {
-      setState("success");
-      setMessage("Magic link sent. Check your email.");
-    }
-
-    setEmail("");
+    setLoading(false);
+    setMsg(error ? error.message : "Check your email for the magic link!");
   };
 
-  const handleGoogleLogin = async () => {
-    setState("loading");
-    await supabase.auth.signInWithOAuth({
+  const handleGoogle = () => {
+    supabase.auth.signInWithOAuth({
       provider: "google",
-      options: {
-        redirectTo: window.location.origin + "/dashboard",
-      },
+      options: { redirectTo: `${window.location.origin}/dashboard` },
     });
   };
 
   return (
-    <main className="flex items-center justify-center min-h-screen px-4">
-      <div className="card w-full max-w-md p-10 text-center">
-        {state === "success" ? (
-          <>
-            <h2 className="text-xl font-semibold mb-4">Check your email</h2>
-            <p className="`text-var(--text-secondary)`">{message}</p>
-          </>
-        ) : state === "error" ? (
-          <>
-            <h2 className="text-xl font-semibold mb-4">Try again</h2>
-            <p className="text-red-500 mb-6">{message}</p>
-            <button
-              onClick={() => setState("idle")}
-              className="btn-primary w-full"
-            >
-              Back
-            </button>
-          </>
-        ) : (
-          <>
-            <h1 className="text-2xl font-semibold mb-2">Welcome</h1>
+    <div className="flex min-h-screen items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white p-10 rounded-3xl border border-(--border-light) card-shadow">
+        <h1 className="text-2xl font-semibold text-center mb-2">
+          Welcome Back
+        </h1>
+        <p className="text-(--text-secondary) text-center mb-8 text-sm">
+          Sign in to manage your shop
+        </p>
 
-            <p className="text-sm `text-var(--text-secondary)` mb-8">
-              Enter your email to sign in
-            </p>
+        <form onSubmit={handleMagicLink} className="space-y-4">
+          <input
+            type="email"
+            placeholder="name@company.com"
+            required
+            className="input-base"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <button disabled={loading} className="btn-black">
+            {loading ? "Sending..." : "Continue with Email"}
+          </button>
+        </form>
 
-            <form onSubmit={handleEmailLogin} className="flex flex-col gap-4">
-              <input
-                type="email"
-                placeholder="name@example.com"
-                className="input"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+        <div className="relative my-8 text-center text-xs text-(--text-secondary) uppercase tracking-widest">
+          <span className="bg-white px-2 relative z-10">Or</span>
+          <div className="absolute top-1/2 left-0 w-full h-px bg-(--border-light)"></div>
+        </div>
 
-              <button
-                disabled={state === "loading"}
-                className="btn-primary cursor-pointer"
-              >
-                {state === "loading" ? "Sending..." : "Continue with Email"}
-              </button>
-            </form>
+        <button
+          onClick={handleGoogle}
+          className="w-full py-3 px-6 border border-(--border-light) rounded-xl font-medium hover:bg-neutral-50 transition-all"
+        >
+          Continue with Google
+        </button>
 
-            <div className="separator my-6">or</div>
-
-            <button
-              onClick={handleGoogleLogin}
-              className="btn-outline w-full hover:bg-neutral-100 transition cursor-pointer"
-            >
-              Continue with Google
-            </button>
-          </>
+        {msg && (
+          <p className="mt-6 text-center text-sm font-medium text-blue-600">
+            {msg}
+          </p>
         )}
       </div>
-    </main>
+    </div>
   );
 }

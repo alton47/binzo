@@ -1,22 +1,20 @@
-import { NextResponse } from "next/server";
-import { requireUser } from "@/lib/auth/require-org";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import { createOrganizationWithAdmin } from "@/lib/db/organization";
+import { NextResponse } from "next/server";
 
-export async function POST() {
-  const user = await requireUser();
+export async function GET() {
+  const supabase = await createSupabaseServerClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "No user" }, { status: 401 });
 
-  const { data: existing } = await supabaseAdmin
+  const { data: profile } = await supabaseAdmin
     .from("profiles")
-    .select("*")
+    .select("organization_id")
     .eq("id", user.id)
     .single();
 
-  if (existing) {
-    return NextResponse.json({ ok: true });
-  }
-
-  const org = await createOrganizationWithAdmin(user.id, "My Shop");
-
-  return NextResponse.json({ org });
+  // If no org, redirect to onboarding in the frontend
+  return NextResponse.json({ hasOrg: !!profile?.organization_id });
 }
