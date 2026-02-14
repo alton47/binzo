@@ -1,21 +1,12 @@
-import { supabaseAdmin } from "@/lib/supabase/admin";
+import { supabaseAdmin } from "../supabase/admin";
 
-export async function createOrganizationWithAdmin(
-  userId: string,
-  name: string,
-) {
-  const { data: org } = await supabaseAdmin
+export async function createOrganization(name: string, currency: string) {
+  const { data, error } = await supabaseAdmin
     .from("organizations")
-    .insert({ name })
+    .insert({ name, currency })
     .select()
     .single();
 
-  await supabaseAdmin.from("profiles").insert({
-    id: userId,
-    organization_id: org.id,
-    role: "admin",
-    name: "Owner",
-  });
-
-  return org;
+  if (error) throw error;
+  return data;
 }
