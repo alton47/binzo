@@ -1,26 +1,56 @@
 @import "tailwindcss";
 
 :root {
-  --background: #eae9e9;
-  --foreground: #171717;
+  --bg-main: #fafafa;
+  --bg-card: #ffffff;
+  --border-light: #e5e7eb;
+  --text-primary: #1a1a1a;
+  --text-secondary: #6b7280;
+  --button-primary: #111111;
+  --button-hover: #000000;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: "Inter", sans-serif;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.input {
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 12px 16px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  border-color: #000;
+}
+
+.btn-primary {
+  background: var(--button-primary);
+  color: white;
+  border-radius: 10px;
+  padding: 12px;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.btn-outline {
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 12px;
 }
