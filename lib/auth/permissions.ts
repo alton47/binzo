@@ -1,8 +1,7 @@
-export function canManageProducts(role: string | undefined | null) {
-  if (!role) return false;
+export function canManageProducts(role?: string) {
   return role === "admin" || role === "manager";
 }
 
-export function isAdmin(role: string | undefined | null) {
+export function isAdmin(role?: string) {
   return role === "admin";
 }
