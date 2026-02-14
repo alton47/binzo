@@ -100,7 +100,10 @@ export default function LoginPage() {
                 required
               />
 
-              <button disabled={state === "loading"} className="btn-primary">
+              <button
+                disabled={state === "loading"}
+                className="btn-primary cursor-pointer"
+              >
                 {state === "loading" ? "Sending..." : "Continue with Email"}
               </button>
             </form>
@@ -109,7 +112,7 @@ export default function LoginPage() {
 
             <button
               onClick={handleGoogleLogin}
-              className="btn-outline w-full hover:bg-neutral-100 transition"
+              className="btn-outline w-full hover:bg-neutral-100 transition cursor-pointer"
             >
               Continue with Google
             </button>
