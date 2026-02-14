@@ -1,20 +1,27 @@
 @import "tailwindcss";
 
-:root {
-  --bg-main: #fafafa;
-  --bg-card: #ffffff;
+@theme {
+  --color-bg-main: #fafafa;
+  --color-bg-card: #ffffff;
   --border-light: #f1f1f1;
   --text-primary: #111111;
   --text-secondary: #666666;
-  --brand: #000000;
 }
 
-body {
-  background-color: var(--bg-main);
+:root {
+  background-color: var(--color-bg-main);
   color: var(--text-primary);
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  --font-sans: "Inter", system-ui, sans-serif;
 }
 
-.glass-card {
-  @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-sm;
+.card-shadow {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.input-base {
+  @apply w-full px-4 py-3 rounded-xl border border-(--border-light) bg-white focus:outline-none focus:ring-2 focus:ring-black/5 transition-all;
+}
+
+.btn-black {
+  @apply w-full py-3 px-6 bg-black text-white rounded-xl font-medium hover:bg-neutral-800 transition-all disabled:opacity-50;
 }
