@@ -1,4 +1,4 @@
-import Card from "@/components/ui/Card";
+import Card from "@/components/ui/StatCard";
 
 export default function StatCard({
   title,
