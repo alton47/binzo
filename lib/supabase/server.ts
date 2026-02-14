@@ -18,7 +18,7 @@ export async function createSupabaseServerClient() {
               cookieStore.set(name, value, options),
             );
           } catch {
-            /* Handle middleware edge cases */
+            /* Handle middleware edge casess */
           }
         },
       },
