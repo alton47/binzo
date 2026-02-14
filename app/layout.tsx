@@ -1,6 +1,4 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Sidebar from "@/components/dashboard/Sidebar";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,20 +11,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Nenga Inventory Manager",
-  description: "Inventory Management Platform",
+export const metadata = {
+  title: "Inventory Manager",
+  description: "Modern Inventory SaaS",
 };
 
-export default function DashboardLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
-      <div className="flex-1 p-8 `bg-var(--bg-main)`">{children}</div>
-    </div>
+    <html lang="en">
+      <body>{children}</body>
+    </html>
   );
 }
