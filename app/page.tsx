@@ -1,107 +1,95 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-);
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import AuthCard from "@/components/ui/AuthCard";
 
 export default function LoginPage() {
+  const supabase = createSupabaseBrowserClient();
+
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault(); // Prevents page refresh on Enter
+  const handleEmailLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!email) return;
 
     setLoading(true);
+    setMessage(null);
+
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: window.location.origin },
+      options: {
+        emailRedirectTo: window.location.origin + "/dashboard",
+      },
     });
 
-    if (error) alert(error.message);
-    else alert("Check your email!");
+    if (error) {
+      if (error.status === 429) {
+        setMessage("Too many requests. Come back in a few minutes.");
+      } else {
+        setMessage(error.message);
+      }
+    } else {
+      setMessage("Magic link sent. Check your email.");
+    }
+
+    setEmail(""); // clear input always
     setLoading(false);
   };
 
-  return (
-    <main style={styles.container}>
-      <div style={styles.card}>
-        <h1 style={styles.title}>Welcome</h1>
-        <p style={styles.subtitle}>Enter your email to sign in</p>
+  const handleGoogleLogin = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin + "/dashboard",
+      },
+    });
+  };
 
-        <form onSubmit={handleLogin} style={styles.form}>
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-neutral-50 dark:bg-black px-4">
+      <AuthCard>
+        <h1 className="text-2xl font-semibold text-center mb-2">
+          Welcome back
+        </h1>
+        <p className="text-sm text-neutral-500 text-center mb-8">
+          Sign in to your inventory manager
+        </p>
+
+        <form onSubmit={handleEmailLogin} className="flex flex-col gap-4">
           <input
             type="email"
             placeholder="name@example.com"
+            className="px-4 py-3 rounded-lg border border-neutral-300 dark:border-neutral-700 bg-transparent focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white transition"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            style={styles.input}
             required
           />
-          <button type="submit" disabled={loading} style={styles.button}>
-            {loading ? "Sending link..." : "Continue with Email"}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="py-3 rounded-lg bg-black text-white dark:bg-white dark:text-black font-medium hover:opacity-90 transition"
+          >
+            {loading ? "Sending..." : "Continue with Email"}
           </button>
         </form>
-      </div>
+
+        <div className="my-6 text-center text-sm text-neutral-400">or</div>
+
+        <button
+          onClick={handleGoogleLogin}
+          className="w-full py-3 rounded-lg border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+        >
+          Continue with Google
+        </button>
+
+        {message && (
+          <p className="mt-6 text-sm text-center text-neutral-500">{message}</p>
+        )}
+      </AuthCard>
     </main>
   );
 }
-
-const styles = {
-  container: {
-    display: "flex",
-    height: "100vh",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#fafafa", // Light gray background
-    fontFamily: "Inter, sans-serif",
-  },
-  card: {
-    width: "100%",
-    maxWidth: "400px",
-    padding: "40px",
-    backgroundColor: "#ffffff",
-    borderRadius: "12px",
-    boxShadow: "0 4px 20px rgba(0,0,0,0.05)",
-    textAlign: "center" as const,
-  },
-  title: {
-    fontSize: "24px",
-    fontWeight: "600",
-    marginBottom: "8px",
-    color: "#1a1a1a",
-  },
-  subtitle: {
-    fontSize: "14px",
-    color: "#666",
-    marginBottom: "32px",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column" as const,
-    gap: "12px",
-  },
-  input: {
-    padding: "12px 16px",
-    borderRadius: "8px",
-    border: "1px solid #e5e7eb",
-    fontSize: "14px",
-    outline: "none",
-    color: "#000",
-  },
-  button: {
-    padding: "12px",
-    borderRadius: "8px",
-    border: "none",
-    backgroundColor: "#1a1a1a",
-    color: "white",
-    fontSize: "14px",
-    fontWeight: "500",
-    cursor: "pointer",
-    transition: "opacity 0.2s",
-  },
-};
