@@ -2,27 +2,23 @@ import Link from "next/link";
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-white dark:bg-black flex flex-col items-center justify-center text-center px-6">
-      <h1 className="text-4xl md:text-6xl font-bold mb-6">Inventory Manager</h1>
-      <p className="text-neutral-500 max-w-xl mb-10">
-        Manage products, track sales, control stock, and scale your business
-        with a powerful dashboard.
-      </p>
+    <main className="min-h-screen flex flex-col items-center justify-center px-6">
+      <div className="text-center max-w-2xl">
+        <h1 className="text-5xl font-semibold mb-6">Nenga Inventory Manager</h1>
 
-      <div className="flex gap-4">
-        <Link
-          href="/login"
-          className="px-6 py-3 rounded-xl bg-black text-white dark:bg-white dark:text-black"
-        >
-          Get Started
-        </Link>
+        <p className="text-lg `text-var(--text-secondary)` mb-10">
+          Manage products, sales, users and stock in one clean dashboard.
+        </p>
 
-        <Link
-          href="/login"
-          className="px-6 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700"
-        >
-          Login
-        </Link>
+        <div className="flex justify-center gap-4">
+          <Link href="/register" className="btn-primary px-6">
+            Get Started
+          </Link>
+
+          {/* <Link href="/login" className="btn-outline px-6">
+            Login
+          </Link> */}
+        </div>
       </div>
     </main>
   );
