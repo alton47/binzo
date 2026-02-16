@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nenga POS | Entrance</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      #mobile-shield {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: #f1f1f1;
+        z-index: 99999;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+      }
+      .shield-card {
+        background: white;
+        padding: 50px 40px;
+        border-radius: 32px;
+        border: 1px solid #e2e2e2;
+        text-align: center;
+        max-width: 400px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.03);
+      }
+      .shield-icon {
+        font-size: 48px;
+        margin-bottom: 20px;
+      }
+      .shield-h {
+        font-size: 1.6rem;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-bottom: 12px;
+        color: #000;
+      }
+      .shield-p {
+        color: #666;
+        line-height: 1.5;
+        font-size: 0.95rem;
+      }
+
+      /* The Logic: Show shield on any screen smaller than 1024px (iPad Pro size) */
+      @media (max-width: 1024px) {
+        #mobile-shield {
+          display: flex;
+        }
+        #app-flow,
+        #dashboard-wrapper {
+          display: none !important;
+        } /* Hides your main content */
+      }
+
+      :root {
+        --bg-matte: #f1f1f1;
+        --bg-card: #ffffff;
+        --border-light: #e2e2e2;
+        --text-primary: #111111;
+        --text-secondary: #666666;
+        --accent-black: #000000;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", sans-serif;
+      }
+      body {
+        background-color: var(--bg-matte);
+        color: var(--text-primary);
+        -webkit-font-smoothing: antialiased;
+        min-height: 100vh;
+      }
+      .hidden {
+        display: none !important;
+      }
+
+      .page-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .card {
+        background: var(--bg-card);
+        width: 100%;
+        max-width: 460px;
+        padding: 50px 40px;
+        border-radius: 32px;
+        border: 1px solid var(--border-light);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.03);
+        text-align: center;
+        animation: fadeIn 0.4s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* TYPOGRAPHY */
+      .hero-text {
+        font-size: 5.5rem;
+        font-weight: 800;
+        letter-spacing: -5px;
+        line-height: 0.9;
+        margin-bottom: 1rem;
+      }
+      .h-2 {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
+      }
+      .sub-text {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        margin-bottom: 24px;
+        line-height: 1.4;
+      }
+
+      /* BUTTONS */
+      .btn-container {
+        display: flex;
+        gap: 12px;
+        max-width: 400px;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .btn-black,
+      .btn-ghost {
+        flex: 1;
+        padding: 18px 24px;
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.2s;
+      }
+      .btn-black {
+        background: var(--accent-black);
+        color: white;
+      }
+      .btn-ghost {
+        background: #e8e8e8;
+        color: var(--text-primary);
+      }
+      .btn-black:hover {
+        opacity: 0.85;
+        transform: scale(0.98);
+      }
+      .btn-full {
+        width: 100%;
+        margin-top: 5px;
+      }
+
+      /* INPUTS */
+      input,
+      select {
+        width: 100%;
+        padding: 16px;
+        border-radius: 14px;
+        border: 1px solid var(--border-light);
+        background: #fafafa;
+        margin-bottom: 12px;
+        outline: none;
+        font-size: 1rem;
+        transition: border 0.2s;
+      }
+      input:focus {
+        border-color: var(--accent-black);
+        background: #fff;
+      }
+
+      /* SEPARATOR */
+      .separator {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 25px 0;
+        color: #bbb;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .separator::before,
+      .separator::after {
+        content: "";
+        flex: 1;
+        border-bottom: 1px solid var(--border-light);
+      }
+      .separator:not(:empty)::before {
+        margin-right: 1.5rem;
+      }
+      .separator:not(:empty)::after {
+        margin-left: 1.5rem;
+      }
+
+      /* PILLS */
+      .pill-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .pill {
+        padding: 14px;
+        border: 1px solid var(--border-light);
+        border-radius: 14px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: 0.2s;
+        background: #fafafa;
+      }
+      .pill.active {
+        background: rgb(8, 8, 8);
+        color: white;
+        border-color: black;
+      }
+
+      /* HOVER BACK LINK */
+      .back-link {
+        margin-top: 24px;
+        font-size: 0.9rem;
+        color: #999;
+        cursor: pointer;
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 12px;
+        transition: all 0.2s;
+        font-weight: 500;
+      }
+      .back-link:hover {
+        color: black;
+      }
+
+      /* TEAM LABELS */
+      .input-label {
+        display: block;
+        text-align: left;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #aaa;
+        margin: 0 0 6px 4px;
+        letter-spacing: 0.5px;
+      }
+
+      /* DROPDOWN STYLING */
+      .modern-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23999'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        background-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="mobile-shield">
+      <div class="shield-card">
+        <div class="shield-icon">🖥️</div>
+        <h2 class="shield-h">Desktop Only</h2>
+        <p class="shield-p">
+          Binzo Enterprise is built for high-performance desktop workflows.
+          <b>Mobile and Tablet support is coming soon.</b>
+        </p>
+      </div>
+    </div>
+
+    <div id="app-flow">
+      <section id="page-landing" class="page-container">
+        <div style="text-align: center">
+          <h1 class="hero-text">Nenga<span style="color: #aaa">POS</span></h1>
+          <p
+            style="
+              color: var(--text-secondary);
+              margin-bottom: 40px;
+              font-size: 1.2rem;
+            "
+          >
+            Atomic inventory for high-performance shops.
+          </p>
+
+          <div class="btn-container">
+            <button class="btn-ghost" onclick="nav('page-login')">Login</button>
+            <button class="btn-black" onclick="nav('page-setup-admin')">
+              Open Shop
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-login" class="page-container hidden">
+        <div class="card">
+          <h2 class="h-2">Welcome Back</h2>
+          <p class="sub-text">Sign in to manage your shop</p>
+          <input type="email" placeholder="name@company.com" />
+          <input type="password" placeholder="Password" />
+          <button class="btn-black btn-full" onclick="simulateLogin()">
+            Continue
+          </button>
+          <span class="back-link" onclick="nav('page-landing')"
+            >← Back to start</span
+          >
+        </div>
+      </section>
+
+      <section id="page-setup-admin" class="page-container hidden">
+        <div class="card">
+          <h2 class="h-2">Create Profile</h2>
+          <p class="sub-text">Set up the master admin account</p>
+          <button
+            class="btn-ghost btn-full"
+            style="background: #fff; border: 1px solid var(--border-light)"
+          >
+            Continue with Google
+          </button>
+          <div class="separator">Or</div>
+          <input type="text" id="adm-name" placeholder="Full Name" />
+          <input type="email" id="adm-email" placeholder="Email Address" />
+          <input type="password" id="adm-pass" placeholder="Password" />
+          <input
+            type="password"
+            id="adm-pass-confirm"
+            placeholder="Confirm Password"
+          />
+          <button class="btn-black btn-full" onclick="startCountdown()">
+            Create Account
+          </button>
+          <span class="back-link" onclick="nav('page-landing')"
+            >← Back to start</span
+          >
+        </div>
+      </section>
+
+      <section id="page-verify" class="page-container hidden">
+        <div class="card">
+          <div style="font-size: 48px; margin-bottom: 30px">📧</div>
+          <h2 id="welcome-name" class="h-2">Welcome, Admin!</h2>
+          <div style="margin-bottom: 40px">
+            <p
+              style="
+                color: var(--text-secondary);
+                font-size: 1rem;
+                line-height: 1.2;
+              "
+            >
+              We've sent a verification link to your email.
+            </p>
+            <p
+              style="
+                color: var(--text-secondary);
+                font-size: 1rem;
+                line-height: 1.2;
+              "
+            >
+              Confirm it to activate your shop identity.
+            </p>
+          </div>
+          <p style="color: #888; font-weight: 500; font-size: 0.9rem">
+            Redirecting to shop details in
+            <span id="timer" style="color: #000; font-weight: 700">5</span>s...
+          </p>
+        </div>
+      </section>
+
+      <section id="page-setup-shop" class="page-container hidden">
+        <div class="card">
+          <h2 class="h-2">Shop Details</h2>
+          <p class="sub-text">Tell us about your business</p>
+          <input type="text" id="shop-name-input" placeholder="Shop Name" />
+
+          <div class="pill-grid">
+            <div class="pill" onclick="selPill(this)">Retail</div>
+            <div class="pill" onclick="selPill(this)">Wholesale</div>
+            <div class="pill" onclick="selPill(this)">Ecommerce</div>
+            <div class="pill" onclick="selPill(this)">Pharmacy</div>
+            <div class="pill" onclick="selPill(this)">Garment</div>
+            <div class="pill" onclick="selPill(this)">Electronics</div>
+            <div
+              class="pill"
+              style="grid-column: span 2"
+              id="pill-others"
+              onclick="selPill(this, true)"
+            >
+              Others
+            </div>
+          </div>
+
+          <div
+            id="others-input-container"
+            class="hidden"
+            style="margin-top: 5px; animation: fadeIn 0.3s"
+          >
+            <input
+              type="text"
+              id="custom-type"
+              placeholder="Type your business type..."
+            />
+          </div>
+
+          <button
+            class="btn-black btn-full"
+            style="margin-top: 15px"
+            onclick="nav('page-team')"
+          >
+            Continue
+          </button>
+        </div>
+      </section>
+
+      <section id="page-team" class="page-container hidden">
+        <div class="card">
+          <h2 class="h-2">Invite Team</h2>
+          <p class="sub-text">Add your staff members and set roles</p>
+
+          <label class="input-label">Staff Email</label>
+          <input type="email" placeholder="staff@company.com" />
+
+          <label class="input-label">Assign Role</label>
+          <select class="modern-select">
+            <option>Manager (Full Access)</option>
+            <option>Seller (POS Access)</option>
+            <option>Viewer (Read Only)</option>
+          </select>
+
+          <button
+            class="btn-black btn-full"
+            style="margin-top: 10px"
+            onclick="saveAndGo()"
+          >
+            Launch Dashboard
+          </button>
+          <span class="back-link" onclick="saveAndGo()">Skip for now</span>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      let userData = { adminName: "", shopName: "", isLoggedIn: false };
+
+      function nav(id) {
+        document
+          .querySelectorAll("section")
+          .forEach((s) => s.classList.add("hidden"));
+        document.getElementById(id).classList.remove("hidden");
+      }
+
+      function selPill(el, isOther = false) {
+        document
+          .querySelectorAll(".pill")
+          .forEach((p) => p.classList.remove("active"));
+        el.classList.add("active");
+        const othersInput = document.getElementById("others-input-container");
+        if (isOther) othersInput.classList.remove("hidden");
+        else othersInput.classList.add("hidden");
+      }
+
+      function startCountdown() {
+        const nameInput = document.getElementById("adm-name").value;
+        const pass = document.getElementById("adm-pass").value;
+        const confirm = document.getElementById("adm-pass-confirm").value;
+
+        if (!nameInput) return alert("Please enter your name bro!");
+        if (pass !== confirm) return alert("Passwords don't match!");
+
+        userData.adminName = nameInput;
+        document.getElementById("welcome-name").innerText =
+          "Welcome, " + nameInput.split(" ")[0] + "!";
+
+        nav("page-verify");
+        let timeLeft = 5;
+        const timerElement = document.getElementById("timer");
+
+        const interval = setInterval(() => {
+          timeLeft--;
+          timerElement.innerText = timeLeft;
+          if (timeLeft <= 0) {
+            clearInterval(interval);
+            nav("page-setup-shop");
+          }
+        }, 1000);
+      }
+
+      function simulateLogin() {
+        window.location.href = "binzo.html";
+      }
+
+      function saveAndGo() {
+        userData.shopName =
+          document.getElementById("shop-name-input").value || "Binzo Shop";
+        localStorage.setItem("binzo_session", JSON.stringify(userData));
+        window.location.href = "binzo.html";
+      }
+    </script>
+  </body>
+</html>
