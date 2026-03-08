@@ -1,0 +1,1472 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Allan's Job Blaster ⚡</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a0a0f;
+        --surface: #111118;
+        --border: #1e1e2e;
+        --accent: #7fff7f;
+        --accent2: #ff7f50;
+        --accent3: #7fb3ff;
+        --text: #e8e8f0;
+        --muted: #666680;
+        --card: #14141e;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Syne", sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* Animated grid bg */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(127, 255, 127, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(127, 255, 127, 0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 24px;
+        position: relative;
+        z-index: 1;
+      }
+
+      header {
+        padding: 40px 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 40px;
+      }
+
+      .logo {
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+      }
+      .logo span {
+        color: var(--accent);
+      }
+
+      .badge {
+        background: var(--accent);
+        color: #000;
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 2px;
+        letter-spacing: 1px;
+      }
+
+      .hero {
+        margin-bottom: 48px;
+      }
+
+      .hero h1 {
+        font-size: clamp(32px, 5vw, 58px);
+        font-weight: 800;
+        line-height: 1.05;
+        letter-spacing: -2px;
+        margin-bottom: 12px;
+      }
+
+      .hero h1 em {
+        font-style: normal;
+        color: var(--accent);
+      }
+
+      .hero p {
+        color: var(--muted);
+        font-size: 15px;
+        font-family: "Space Mono", monospace;
+        max-width: 500px;
+      }
+
+      .counter {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-family: "Space Mono", monospace;
+        font-size: 13px;
+        margin-bottom: 32px;
+      }
+
+      .counter .num {
+        color: var(--accent);
+        font-size: 20px;
+        font-weight: 700;
+        min-width: 32px;
+        text-align: center;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+
+      @media (max-width: 700px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .panel {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        overflow: hidden;
+      }
+
+      .panel-header {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .panel-title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-family: "Space Mono", monospace;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      .panel-body {
+        padding: 20px;
+      }
+
+      label {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-family: "Space Mono", monospace;
+        margin-bottom: 8px;
+        margin-top: 16px;
+      }
+
+      label:first-child {
+        margin-top: 0;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        color: var(--text);
+        font-family: "Space Mono", monospace;
+        font-size: 13px;
+        padding: 10px 14px;
+        outline: none;
+        transition: border-color 0.2s;
+        resize: vertical;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(127, 255, 127, 0.08);
+      }
+
+      textarea {
+        min-height: 100px;
+      }
+
+      .job-paste {
+        min-height: 180px;
+        font-size: 12px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border-radius: 4px;
+        font-family: "Syne", sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+        border: none;
+        transition: all 0.15s;
+        letter-spacing: 0.3px;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #000;
+        width: 100%;
+        justify-content: center;
+        font-size: 15px;
+        padding: 14px;
+        margin-top: 20px;
+      }
+
+      .btn-primary:hover {
+        background: #5ee65e;
+        transform: translateY(-1px);
+      }
+      .btn-primary:active {
+        transform: translateY(0);
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .btn-ghost {
+        background: transparent;
+        color: var(--text);
+        border: 1px solid var(--border);
+        font-size: 12px;
+        padding: 7px 14px;
+      }
+
+      .btn-ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .btn-copy {
+        background: var(--accent3);
+        color: #000;
+        font-size: 12px;
+        padding: 7px 14px;
+      }
+
+      .btn-copy:hover {
+        opacity: 0.85;
+      }
+
+      .btn-mail {
+        background: var(--accent2);
+        color: #000;
+        font-size: 12px;
+        padding: 7px 14px;
+      }
+
+      .email-output {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 20px;
+        font-family: "Space Mono", monospace;
+        font-size: 12.5px;
+        line-height: 1.7;
+        white-space: pre-wrap;
+        min-height: 300px;
+        color: var(--text);
+        position: relative;
+      }
+
+      .email-output.loading {
+        color: var(--muted);
+        font-style: italic;
+      }
+
+      .subject-line {
+        background: rgba(127, 255, 127, 0.06);
+        border: 1px solid rgba(127, 255, 127, 0.2);
+        border-radius: 4px;
+        padding: 10px 14px;
+        font-family: "Space Mono", monospace;
+        font-size: 12px;
+        color: var(--accent);
+        margin-bottom: 12px;
+        word-break: break-all;
+      }
+
+      .action-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+        align-items: center;
+      }
+
+      .status-tag {
+        font-size: 11px;
+        font-family: "Space Mono", monospace;
+        padding: 4px 10px;
+        border-radius: 2px;
+        font-weight: 700;
+      }
+
+      .tag-pending {
+        background: rgba(255, 200, 0, 0.15);
+        color: #ffc800;
+      }
+      .tag-sent {
+        background: rgba(127, 255, 127, 0.15);
+        color: var(--accent);
+      }
+
+      .queue-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        max-height: 380px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+
+      .queue-list::-webkit-scrollbar {
+        width: 4px;
+      }
+      .queue-list::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .queue-list::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 2px;
+      }
+
+      .queue-item {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 12px 14px;
+        cursor: pointer;
+        transition: all 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .queue-item:hover {
+        border-color: var(--accent3);
+      }
+      .queue-item.active {
+        border-color: var(--accent);
+        background: rgba(127, 255, 127, 0.04);
+      }
+
+      .queue-item-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .queue-company {
+        font-weight: 700;
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .queue-role {
+        font-size: 11px;
+        color: var(--muted);
+        font-family: "Space Mono", monospace;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .sources-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+        margin-bottom: 32px;
+      }
+
+      .source-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 14px 16px;
+        cursor: pointer;
+        transition: all 0.15s;
+        text-decoration: none;
+        display: block;
+      }
+
+      .source-card:hover {
+        border-color: var(--accent3);
+        transform: translateY(-2px);
+      }
+
+      .source-name {
+        font-weight: 700;
+        font-size: 13px;
+        margin-bottom: 4px;
+        color: var(--text);
+      }
+
+      .source-desc {
+        font-size: 11px;
+        color: var(--muted);
+        font-family: "Space Mono", monospace;
+        line-height: 1.5;
+      }
+
+      .source-tag {
+        font-size: 10px;
+        padding: 2px 7px;
+        border-radius: 2px;
+        margin-top: 8px;
+        display: inline-block;
+        font-family: "Space Mono", monospace;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+
+      .tag-hot {
+        background: rgba(255, 127, 80, 0.2);
+        color: var(--accent2);
+      }
+      .tag-hidden {
+        background: rgba(127, 179, 255, 0.2);
+        color: var(--accent3);
+      }
+      .tag-free {
+        background: rgba(127, 255, 127, 0.2);
+        color: var(--accent);
+      }
+
+      .section-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-family: "Space Mono", monospace;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .section-label::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      .spinner {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(0, 0, 0, 0.3);
+        border-top-color: #000;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .tips {
+        background: var(--card);
+        border: 1px solid rgba(127, 255, 127, 0.15);
+        border-radius: 6px;
+        padding: 20px 24px;
+        margin-bottom: 32px;
+      }
+
+      .tips h3 {
+        font-size: 13px;
+        color: var(--accent);
+        font-family: "Space Mono", monospace;
+        margin-bottom: 12px;
+        letter-spacing: 1px;
+      }
+
+      .tips ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .tips li {
+        font-size: 12px;
+        color: var(--muted);
+        font-family: "Space Mono", monospace;
+        display: flex;
+        gap: 10px;
+        line-height: 1.5;
+      }
+
+      .tips li::before {
+        content: "→";
+        color: var(--accent);
+        flex-shrink: 0;
+      }
+
+      .search-strings {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 20px;
+        margin-bottom: 32px;
+      }
+
+      .search-strings h3 {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--accent2);
+        font-family: "Space Mono", monospace;
+        margin-bottom: 14px;
+      }
+
+      .search-chip {
+        display: inline-flex;
+        align-items: center;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        padding: 5px 11px;
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        color: var(--text);
+        margin: 3px;
+        cursor: pointer;
+        transition: all 0.15s;
+        user-select: all;
+      }
+
+      .search-chip:hover {
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+
+      .progress-bar {
+        height: 3px;
+        background: var(--border);
+        border-radius: 2px;
+        overflow: hidden;
+        margin-top: 8px;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 2px;
+        transition: width 0.3s;
+      }
+
+      .tab-row {
+        display: flex;
+        gap: 2px;
+        margin-bottom: 24px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .tab {
+        padding: 10px 20px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        border: none;
+        background: none;
+        color: var(--muted);
+        border-bottom: 2px solid transparent;
+        transition: all 0.15s;
+        margin-bottom: -1px;
+        font-family: "Syne", sans-serif;
+      }
+
+      .tab.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+      .tab:hover {
+        color: var(--text);
+      }
+
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+
+      .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--accent);
+        color: #000;
+        padding: 12px 20px;
+        border-radius: 4px;
+        font-family: "Space Mono", monospace;
+        font-size: 12px;
+        font-weight: 700;
+        transform: translateX(200px);
+        opacity: 0;
+        transition: all 0.3s;
+        z-index: 1000;
+      }
+
+      .notification.show {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      .full-panel {
+        grid-column: 1 / -1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="notification" class="notification"></div>
+
+    <div class="container">
+      <header>
+        <div class="logo">Allan's <span>JOB BLASTER</span> ⚡</div>
+        <div class="badge">300 JOBS MODE</div>
+      </header>
+
+      <div class="hero">
+        <h1>Paste Job.<br /><em>Fire Email.</em><br />Get Hired.</h1>
+        <p>
+          // AI writes hyper-personalized outreach for every role. Your job =
+          approve + send.
+        </p>
+      </div>
+
+      <div class="counter">
+        <span>EMAILS GENERATED</span>
+        <span class="num" id="emailCount">0</span>
+        <span style="color: var(--muted)">/ your goal: 300</span>
+        <div style="flex: 1; max-width: 120px" class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="tab-row">
+        <button class="tab active" onclick="switchTab('generator')">
+          ⚡ Generator
+        </button>
+        <button class="tab" onclick="switchTab('queue')">
+          📋 Queue (<span id="queueCount">0</span>)
+        </button>
+        <button class="tab" onclick="switchTab('sources')">
+          🔍 Job Sources
+        </button>
+        <button class="tab" onclick="switchTab('tips')">💡 Strategy</button>
+      </div>
+
+      <!-- GENERATOR TAB -->
+      <div class="tab-content active" id="tab-generator">
+        <div class="grid">
+          <!-- INPUT PANEL -->
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">Job Details</span>
+              <div class="dot"></div>
+            </div>
+            <div class="panel-body">
+              <label>Company Name</label>
+              <input
+                type="text"
+                id="companyName"
+                placeholder="e.g. Stripe, Linear, Zuri"
+              />
+
+              <label>Contact Name (if known)</label>
+              <input
+                type="text"
+                id="contactName"
+                placeholder="e.g. Sarah Chen, or leave blank for team"
+              />
+
+              <label>Contact Email</label>
+              <input
+                type="email"
+                id="contactEmail"
+                placeholder="sarah@company.com"
+              />
+
+              <label>Role / Job Title</label>
+              <input
+                type="text"
+                id="jobRole"
+                placeholder="e.g. Senior Frontend Engineer"
+              />
+
+              <label>Key Tech Stack (from job post)</label>
+              <input
+                type="text"
+                id="techStack"
+                placeholder="e.g. React, TypeScript, GraphQL"
+              />
+
+              <label>What they're building (1 line)</label>
+              <input
+                type="text"
+                id="whatTheyBuild"
+                placeholder="e.g. dev tools, fintech SaaS, 3D commerce platform"
+              />
+
+              <label>Paste Job Description (optional but better)</label>
+              <textarea
+                class="job-paste"
+                id="jobDescription"
+                placeholder="Paste raw job listing here for best results. The AI will extract what matters and craft a hyper-personalized email."
+              ></textarea>
+
+              <label>Tone</label>
+              <select id="tone">
+                <option value="confident">Confident & Direct</option>
+                <option value="creative">Creative & Bold</option>
+                <option value="warm">Warm & Collaborative</option>
+                <option value="technical">Technical & Precise</option>
+              </select>
+
+              <button
+                class="btn btn-primary"
+                id="generateBtn"
+                onclick="generateEmail()"
+              >
+                ⚡ Generate Email
+              </button>
+            </div>
+          </div>
+
+          <!-- OUTPUT PANEL -->
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">Generated Email</span>
+              <button class="btn btn-ghost" onclick="clearOutput()">
+                Clear
+              </button>
+            </div>
+            <div class="panel-body">
+              <div
+                class="subject-line"
+                id="subjectLine"
+                style="display: none"
+              ></div>
+              <div class="email-output" id="emailOutput">
+                Your personalized email will appear here. Fill in job details
+                and hit Generate.
+              </div>
+              <div class="action-row" id="actionRow" style="display: none">
+                <button class="btn btn-copy" onclick="copyEmail()">
+                  📋 Copy Email
+                </button>
+                <button class="btn btn-mail" onclick="openMail()">
+                  ✉️ Open in Mail
+                </button>
+                <button class="btn btn-ghost" onclick="addToQueue()">
+                  + Save to Queue
+                </button>
+                <span class="status-tag tag-pending" id="statusTag"
+                  >PENDING</span
+                >
+              </div>
+              <div
+                id="savedStatus"
+                style="
+                  margin-top: 8px;
+                  font-size: 11px;
+                  color: var(--accent);
+                  font-family: &quot;Space Mono&quot;, monospace;
+                  display: none;
+                "
+              >
+                ✓ Saved to queue
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUEUE TAB -->
+      <div class="tab-content" id="tab-queue">
+        <div class="panel" style="margin-bottom: 24px">
+          <div class="panel-header">
+            <span class="panel-title">Email Queue</span>
+            <div style="display: flex; gap: 8px">
+              <button class="btn btn-ghost" onclick="exportAll()">
+                Export All (.txt)
+              </button>
+              <button
+                class="btn btn-ghost"
+                onclick="clearQueue()"
+                style="color: #ff6b6b; border-color: #ff6b6b33"
+              >
+                Clear All
+              </button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="queue-list" id="queueList">
+              <div
+                style="
+                  color: var(--muted);
+                  font-family: &quot;Space Mono&quot;, monospace;
+                  font-size: 12px;
+                  padding: 20px 0;
+                  text-align: center;
+                "
+              >
+                No emails saved yet. Generate some and hit "Save to Queue" →
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Queue preview -->
+        <div class="panel" id="queuePreviewPanel" style="display: none">
+          <div class="panel-header">
+            <span class="panel-title">Preview</span>
+            <div style="display: flex; gap: 8px">
+              <button class="btn btn-copy" onclick="copyQueueEmail()">
+                📋 Copy
+              </button>
+              <button class="btn btn-mail" onclick="openQueueMail()">
+                ✉️ Open in Mail
+              </button>
+              <button
+                class="btn btn-ghost"
+                onclick="markSent()"
+                style="
+                  color: var(--accent);
+                  border-color: rgba(127, 255, 127, 0.3);
+                "
+              >
+                ✓ Mark Sent
+              </button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="subject-line" id="queueSubject"></div>
+            <div
+              class="email-output"
+              id="queueEmailBody"
+              style="min-height: 200px"
+            ></div>
+            <div
+              style="
+                margin-top: 8px;
+                font-size: 11px;
+                color: var(--muted);
+                font-family: &quot;Space Mono&quot;, monospace;
+              "
+              id="queueMeta"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SOURCES TAB -->
+      <div class="tab-content" id="tab-sources">
+        <div class="section-label">🔥 Best Job Sources for Your Target</div>
+        <div class="sources-grid" id="sourcesGrid"></div>
+
+        <div class="section-label">🔍 Copy-Paste Search Strings</div>
+        <div class="search-strings">
+          <h3>Use these on Google, LinkedIn, and job boards:</h3>
+          <div id="searchChips"></div>
+        </div>
+      </div>
+
+      <!-- TIPS TAB -->
+      <div class="tab-content" id="tab-tips">
+        <div class="tips">
+          <h3>// HOW TO HIT 300 FAST</h3>
+          <ul>
+            <li>
+              Start with Wellfound + Otta — filter by Switzerland 🇨🇭, Singapore
+              🇸🇬, Canada 🇨🇦, remote. Stack: React/Next.js/TypeScript.
+            </li>
+            <li>
+              On LinkedIn: search "frontend engineer" + "remote" + "React" →
+              filter: past 24hrs, small company (1-50),
+              Switzerland/Singapore/UAE.
+            </li>
+            <li>
+              Hacker News "Who's Hiring" post (monthly, first of month) — these
+              are real founders posting. Google "site:news.ycombinator.com who
+              is hiring 2025".
+            </li>
+            <li>
+              Wellfound (AngelList Talent) — directly shows company size,
+              funding, team. Filter to "1-50 people".
+            </li>
+            <li>
+              Crunchbase → filter recently funded startups → go to their website
+              → find CTO email via Apollo.io (free tier = 50 emails/month).
+            </li>
+            <li>
+              Apollo.io free tier — search company + find CTO/founder email. 50
+              free per month.
+            </li>
+            <li>
+              Hunter.io free tier — find emails by company domain. 25 free per
+              month.
+            </li>
+            <li>
+              ProductHunt launches → new product = new hire. Comment on their
+              launch, DM founder, apply via site.
+            </li>
+            <li>
+              NodeFlair — Southeast Asia + Singapore tech focus. Your ABSA
+              Africa experience is a differentiator.
+            </li>
+            <li>
+              Remoteok.com — filter JS/React/TypeScript, good small startup
+              ratio.
+            </li>
+            <li>
+              For every company: paste job desc here → AI generates email → copy
+              → send via your own Gmail. Zero cost.
+            </li>
+            <li>
+              Target: 30 jobs/day × 10 days = 300. Spend 3hrs/day sourcing, 2hrs
+              sending. You've got this.
+            </li>
+          </ul>
+        </div>
+
+        <div class="tips" style="border-color: rgba(255, 127, 80, 0.2)">
+          <h3 style="color: var(--accent2)">// YOUR EDGE (USE IT)</h3>
+          <ul>
+            <li>
+              Switzerland experience (Devedis, Bern) = credibility for CH/EU
+              companies.
+            </li>
+            <li>
+              ABSA Bank TechLead = enterprise scale proof. Drop this for
+              fintech/serious companies.
+            </li>
+            <li>
+              3D/ThreeJS = rare skill. Lead with this for creative/product
+              companies.
+            </li>
+            <li>
+              Your portfolio: AlaraDental.com + Nas.io + u-aid.org — have these
+              open in a tab, reference them in emails.
+            </li>
+            <li>
+              allanalton.com — make sure this is live and loads fast. First
+              thing they click.
+            </li>
+            <li>
+              Sending from your domain (allan@allanalton.com) > Gmail. Set up
+              free forwarding via Cloudflare.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ========== STATE ==========
+      let queue = JSON.parse(localStorage.getItem("jobQueue") || "[]");
+      let selectedQueueIndex = -1;
+      let currentEmail = null;
+      let generationCount = parseInt(localStorage.getItem("genCount") || "0");
+
+      // ========== JOB SOURCES ==========
+      const sources = [
+        {
+          name: "Wellfound",
+          url: "https://wellfound.com/jobs?role=frontend-engineer&remote=true",
+          desc: "Startup jobs, filter by company size 1-50",
+          tag: "hot",
+        },
+        {
+          name: "Otta",
+          url: "https://otta.com",
+          desc: "Modern roles, great for creative/product companies",
+          tag: "hot",
+        },
+        {
+          name: "Hacker News Hiring",
+          url: "https://news.ycombinator.com/submitted?id=whoishiring",
+          desc: "Monthly thread — founders hiring directly",
+          tag: "hidden",
+        },
+        {
+          name: "RemoteOK",
+          url: "https://remoteok.com/remote-typescript-jobs",
+          desc: "Filter: React, TS, remote. Updated daily.",
+          tag: "free",
+        },
+        {
+          name: "NodeFlair",
+          url: "https://nodeflair.com/jobs?locations=Singapore",
+          desc: "Singapore focus, dev salaries visible",
+          tag: "hot",
+        },
+        {
+          name: "Startup Jobs",
+          url: "https://startup.jobs/?remote=true&q=react",
+          desc: "Curated startup roles, less saturated",
+          tag: "hidden",
+        },
+        {
+          name: "YC Work at Startup",
+          url: "https://www.workatastartup.com/jobs?role=eng&remote=true",
+          desc: "YC-backed only. Small teams, well-funded.",
+          tag: "hot",
+        },
+        {
+          name: "LinkedIn (filtered)",
+          url: "https://www.linkedin.com/jobs/search/?keywords=frontend+engineer+react+typescript&f_TP=1&f_E=4,5&f_C=2,3",
+          desc: "Past 24hrs, mid/senior, filtered",
+          tag: "free",
+        },
+        {
+          name: "Crunchbase Startups",
+          url: "https://www.crunchbase.com/discover/organizations/funded_companies",
+          desc: "Find recently funded co's → email CTO",
+          tag: "hidden",
+        },
+        {
+          name: "Product Hunt Jobs",
+          url: "https://www.producthunt.com/jobs?categories=engineering",
+          desc: "New product launches hiring now",
+          tag: "hidden",
+        },
+        {
+          name: "Remotive",
+          url: "https://remotive.com/remote-jobs/software-dev/front-end",
+          desc: "Remote only, good for SG/CH companies",
+          tag: "free",
+        },
+        {
+          name: "Dealroom",
+          url: "https://app.dealroom.co/companies/filter/company_status/anyof_active/rounds/anyof_a/locations/anyof_CH~SG~CA",
+          desc: "Find funded startups in CH, SG, CA",
+          tag: "hidden",
+        },
+        {
+          name: "SwissDevJobs",
+          url: "https://swissdevjobs.ch",
+          desc: "Switzerland-specific dev jobs. Underrated.",
+          tag: "hidden",
+        },
+        {
+          name: "TechInAsia Jobs",
+          url: "https://www.techinasia.com/jobs/search?query=frontend&location=singapore",
+          desc: "Singapore/SEA startup scene",
+          tag: "hot",
+        },
+      ];
+
+      const searchStrings = [
+        '"frontend engineer" react typescript remote -senior site:wellfound.com',
+        'site:news.ycombinator.com "who is hiring" "react" "remote" 2025',
+        '"next.js" "typescript" engineer remote "switzerland" OR "singapore" OR "canada"',
+        '"react developer" "small team" remote "full time" -"10 years"',
+        'intitle:"frontend" OR "full stack" javascript typescript remote switzerland',
+        '"react" "typescript" engineer job "series a" OR "seed" remote',
+        '"threejs" OR "three.js" developer job remote',
+        "linkedin.com/jobs frontend react typescript switzerland singapore remote",
+      ];
+
+      // ========== INIT ==========
+      function init() {
+        renderSources();
+        renderSearchChips();
+        updateCounter();
+        renderQueue();
+      }
+
+      function renderSources() {
+        const grid = document.getElementById("sourcesGrid");
+        grid.innerHTML = sources
+          .map(
+            (s) => `
+      <a href="${s.url}" target="_blank" class="source-card">
+        <div class="source-name">${s.name}</div>
+        <div class="source-desc">${s.desc}</div>
+        <span class="source-tag tag-${s.tag}">${s.tag.toUpperCase()}</span>
+      </a>
+    `,
+          )
+          .join("");
+      }
+
+      function renderSearchChips() {
+        const el = document.getElementById("searchChips");
+        el.innerHTML = searchStrings
+          .map(
+            (s) => `
+      <span class="search-chip" onclick="copyText('${s.replace(/'/g, "\\'")}', this)">${s}</span>
+    `,
+          )
+          .join("");
+      }
+
+      // ========== TABS ==========
+      function switchTab(name) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((el) => el.classList.remove("active"));
+        document
+          .querySelectorAll(".tab")
+          .forEach((el) => el.classList.remove("active"));
+        document.getElementById(`tab-${name}`).classList.add("active");
+        event.target.classList.add("active");
+      }
+
+      // ========== EMAIL GENERATION ==========
+      async function generateEmail() {
+        const company = document.getElementById("companyName").value.trim();
+        const contact = document.getElementById("contactName").value.trim();
+        const email = document.getElementById("contactEmail").value.trim();
+        const role = document.getElementById("jobRole").value.trim();
+        const tech = document.getElementById("techStack").value.trim();
+        const whatTheyBuild = document
+          .getElementById("whatTheyBuild")
+          .value.trim();
+        const jobDesc = document.getElementById("jobDescription").value.trim();
+        const tone = document.getElementById("tone").value;
+
+        if (!company && !jobDesc) {
+          notify(
+            "Add a company name or paste a job description first",
+            "error",
+          );
+          return;
+        }
+
+        const btn = document.getElementById("generateBtn");
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span> Generating...';
+
+        const outputEl = document.getElementById("emailOutput");
+        const subjectEl = document.getElementById("subjectLine");
+        outputEl.className = "email-output loading";
+        outputEl.textContent = "AI is crafting your email...";
+        subjectEl.style.display = "none";
+        document.getElementById("actionRow").style.display = "none";
+        document.getElementById("savedStatus").style.display = "none";
+
+        const toneInstructions = {
+          confident:
+            "Be direct, confident, no fluff. Short punchy sentences. Don't oversell.",
+          creative:
+            "Be bold and creative. Show personality. Reference their visual/product aesthetic.",
+          warm: "Be warm and collaborative. Show genuine interest in their mission.",
+          technical:
+            "Be precise and technical. Reference specific stack choices and architecture. Show deep understanding.",
+        };
+
+        const prompt = `You are Allan Alton Kyahaza, a full-stack engineer writing a cold outreach email applying for a job. Write ONE highly personalized email. Be direct. No fluff.
+
+ABOUT ALLAN:
+- Full-stack engineer: React, Next.js, TypeScript, Node.js, ThreeJS, Tailwind, AWS
+- Recent work: AlaraDental.com (medical SaaS + 3D), Nas.io Marketplace, u-aid.org, overthetinyhills.com
+- Experience: Frontend Dev at Devedis (Bern, Switzerland 2025), TechLead at ABSA Bank (Tanzania 2025), Coding Bootcamp Instructor at HS Hannover, Freelance on Upwork (5-star, 20+ projects)
+- Portfolio: allanalton.com | Email: allanaltonn@gmail.com
+- Based globally, open to remote
+
+TARGET JOB:
+Company: ${company || "Unknown"}
+Contact: ${contact || "[Name]"}
+Role: ${role || "Frontend/Full-Stack Engineer"}
+Tech stack mentioned: ${tech || "React, TypeScript, JavaScript"}
+What they build: ${whatTheyBuild || "a tech product"}
+Job description: ${jobDesc || "not provided"}
+
+TONE: ${toneInstructions[tone]}
+
+RULES:
+- DO NOT say "I saw your job posting" or reference where you found the job
+- DO mention something specific about what they're building (use the job desc for clues)
+- DO reference 1-2 specific recent projects of Allan's that are most relevant to THEIR stack/product
+- DO ask for a full-time role specifically
+- DO end with offer for quick Zoom call
+- Keep it under 220 words
+- The greeting should be "Hi ${contact ? contact : company + " team"}," 
+- Format response as JSON: {"subject": "...", "body": "..."}
+- Subject line should be punchy, specific, not generic
+- Do NOT wrap in markdown code blocks`;
+
+        try {
+          const response = await fetch(
+            "https://api.anthropic.com/v1/messages",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                model: "claude-sonnet-4-20250514",
+                max_tokens: 1000,
+                messages: [{ role: "user", content: prompt }],
+              }),
+            },
+          );
+
+          const data = await response.json();
+          const raw = data.content.map((i) => i.text || "").join("");
+
+          let subject = "",
+            body = "";
+          try {
+            const cleaned = raw.replace(/```json|```/g, "").trim();
+            const parsed = JSON.parse(cleaned);
+            subject = parsed.subject || "Frontend Engineer — Allan Kyahaza";
+            body = parsed.body || raw;
+          } catch {
+            body = raw;
+            subject = `${role || "Frontend Engineer"} — Allan Kyahaza`;
+          }
+
+          currentEmail = { subject, body, company, contact, email, role };
+
+          subjectEl.textContent = `Subject: ${subject}`;
+          subjectEl.style.display = "block";
+          outputEl.className = "email-output";
+          outputEl.textContent = body;
+          document.getElementById("actionRow").style.display = "flex";
+
+          generationCount++;
+          localStorage.setItem("genCount", generationCount);
+          updateCounter();
+        } catch (err) {
+          outputEl.className = "email-output";
+          outputEl.textContent = `Error: ${err.message}\n\nMake sure you're using this on Claude.ai where the API is available.`;
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = "⚡ Generate Email";
+      }
+
+      // ========== ACTIONS ==========
+      function copyEmail() {
+        if (!currentEmail) return;
+        const full = `Subject: ${currentEmail.subject}\n\n${currentEmail.body}`;
+        navigator.clipboard.writeText(full).then(() => notify("Email copied!"));
+      }
+
+      function openMail() {
+        if (!currentEmail) return;
+        const to = currentEmail.email || "";
+        const sub = encodeURIComponent(currentEmail.subject);
+        const body = encodeURIComponent(currentEmail.body);
+        window.open(`mailto:${to}?subject=${sub}&body=${body}`);
+      }
+
+      function addToQueue() {
+        if (!currentEmail) return;
+        queue.push({ ...currentEmail, status: "pending", id: Date.now() });
+        localStorage.setItem("jobQueue", JSON.stringify(queue));
+        document.getElementById("savedStatus").style.display = "block";
+        updateCounter();
+        renderQueue();
+        notify("Saved to queue ✓");
+      }
+
+      function clearOutput() {
+        document.getElementById("emailOutput").textContent =
+          "Your personalized email will appear here.";
+        document.getElementById("subjectLine").style.display = "none";
+        document.getElementById("actionRow").style.display = "none";
+        document.getElementById("savedStatus").style.display = "none";
+        currentEmail = null;
+      }
+
+      // ========== QUEUE ==========
+      function renderQueue() {
+        const list = document.getElementById("queueList");
+        document.getElementById("queueCount").textContent = queue.length;
+
+        if (queue.length === 0) {
+          list.innerHTML =
+            '<div style="color:var(--muted);font-family:\'Space Mono\',monospace;font-size:12px;padding:20px 0;text-align:center">No emails saved yet. Generate some and hit "Save to Queue" →</div>';
+          return;
+        }
+
+        list.innerHTML = queue
+          .map(
+            (item, i) => `
+      <div class="queue-item ${i === selectedQueueIndex ? "active" : ""}" onclick="selectQueueItem(${i})">
+        <div class="queue-item-info">
+          <div class="queue-company">${item.company || "Company"}</div>
+          <div class="queue-role">${item.role || "Role"} ${item.email ? "· " + item.email : ""}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="status-tag ${item.status === "sent" ? "tag-sent" : "tag-pending"}">${item.status === "sent" ? "SENT" : "PENDING"}</span>
+          <button onclick="removeFromQueue(${i}, event)" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px">×</button>
+        </div>
+      </div>
+    `,
+          )
+          .join("");
+      }
+
+      function selectQueueItem(i) {
+        selectedQueueIndex = i;
+        const item = queue[i];
+        document.getElementById("queuePreviewPanel").style.display = "block";
+        document.getElementById("queueSubject").textContent =
+          `Subject: ${item.subject}`;
+        document.getElementById("queueEmailBody").textContent = item.body;
+        document.getElementById("queueMeta").textContent =
+          `To: ${item.email || "no email saved"} · Status: ${item.status}`;
+        renderQueue();
+      }
+
+      function copyQueueEmail() {
+        if (selectedQueueIndex < 0) return;
+        const item = queue[selectedQueueIndex];
+        navigator.clipboard
+          .writeText(`Subject: ${item.subject}\n\n${item.body}`)
+          .then(() => notify("Copied!"));
+      }
+
+      function openQueueMail() {
+        if (selectedQueueIndex < 0) return;
+        const item = queue[selectedQueueIndex];
+        window.open(
+          `mailto:${item.email || ""}?subject=${encodeURIComponent(item.subject)}&body=${encodeURIComponent(item.body)}`,
+        );
+      }
+
+      function markSent() {
+        if (selectedQueueIndex < 0) return;
+        queue[selectedQueueIndex].status = "sent";
+        localStorage.setItem("jobQueue", JSON.stringify(queue));
+        renderQueue();
+        selectQueueItem(selectedQueueIndex);
+        notify("Marked as sent ✓");
+      }
+
+      function removeFromQueue(i, e) {
+        e.stopPropagation();
+        queue.splice(i, 1);
+        if (selectedQueueIndex === i) {
+          selectedQueueIndex = -1;
+          document.getElementById("queuePreviewPanel").style.display = "none";
+        }
+        localStorage.setItem("jobQueue", JSON.stringify(queue));
+        renderQueue();
+        updateCounter();
+      }
+
+      function clearQueue() {
+        if (!confirm("Clear all emails from queue?")) return;
+        queue = [];
+        selectedQueueIndex = -1;
+        localStorage.setItem("jobQueue", JSON.stringify(queue));
+        document.getElementById("queuePreviewPanel").style.display = "none";
+        renderQueue();
+        updateCounter();
+      }
+
+      function exportAll() {
+        if (queue.length === 0) {
+          notify("Queue is empty");
+          return;
+        }
+        const text = queue
+          .map(
+            (item, i) =>
+              `====== EMAIL ${i + 1}: ${item.company} ======\nTo: ${item.email || "[add email]"}\nSubject: ${item.subject}\nStatus: ${item.status}\n\n${item.body}\n\n`,
+          )
+          .join("\n");
+        const blob = new Blob([text], { type: "text/plain" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `allan-job-emails-${new Date().toISOString().split("T")[0]}.txt`;
+        a.click();
+        notify(`Exported ${queue.length} emails!`);
+      }
+
+      // ========== UTILS ==========
+      function updateCounter() {
+        const total = generationCount;
+        document.getElementById("emailCount").textContent = total;
+        document.getElementById("progressFill").style.width =
+          Math.min(100, (total / 300) * 100) + "%";
+      }
+
+      function copyText(text, el) {
+        navigator.clipboard.writeText(text).then(() => {
+          const orig = el.textContent;
+          el.textContent = "✓ copied";
+          el.style.color = "var(--accent)";
+          setTimeout(() => {
+            el.textContent = orig;
+            el.style.color = "";
+          }, 1500);
+        });
+      }
+
+      function notify(msg, type) {
+        const el = document.getElementById("notification");
+        el.textContent = msg;
+        el.style.background = type === "error" ? "#ff6b6b" : "var(--accent)";
+        el.classList.add("show");
+        setTimeout(() => el.classList.remove("show"), 2500);
+      }
+
+      // ========== START ==========
+      init();
+    </script>
+  </body>
+</html>
