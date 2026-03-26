@@ -303,3 +303,8 @@ body.dark .stat-chip { background:#2a2a4a; color:#aaa; }
 /* ── Welcome Banner ── */
 .welcome-banner { background:linear-gradient(135deg,#4a90e2,#7b2ff7); color:white; padding:14px 18px; border-radius:10px; margin-bottom:16px; font-size:0.9rem; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
 .welcome-banner button { background:rgba(255,255,255,0.25); color:white; border:1px solid rgba(255,255,255,0.5); }
+
+/* ── Ripple ── */
+button { position:relative; overflow:hidden; }
+button::after { content:''; position:absolute; inset:0; background:rgba(255,255,255,0.25); opacity:0; border-radius:inherit; transition:opacity 0.3s; }
+button:active::after { opacity:1; }
