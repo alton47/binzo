@@ -223,3 +223,10 @@ body.dark header h1 { color: #7eb8f7; }
 .task-item[draggable="true"] { cursor: grab; }
 .task-item.dragging { opacity: 0.35; transform: scale(1.02); }
 .task-item.drag-over { border: 2px dashed #4a90e2; background: rgba(74,144,226,0.08); }
+
+/* ── Due Dates ── */
+.due-label { font-size: 0.78rem; color: #888; }
+.due-label.overdue { color: #e74c3c; font-weight: 600; }
+.due-label.today   { color: #f0a500; font-weight: 600; }
+.task-item.overdue-task { border-left: 3px solid #e74c3c; }
+body.dark .task-item.overdue-task { border-left: 3px solid #ff6b6b; }
