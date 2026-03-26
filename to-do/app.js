@@ -453,3 +453,32 @@ function sortTasks(tasks, method) {
   controls.appendChild(sel);
   sel.addEventListener('change', renderTasks);
 })();
+
+// ── Bulk select ───────────────────────────────────────────────
+let _selectedIds = new Set();
+function toggleSelect(taskId) {
+  _selectedIds.has(taskId) ? _selectedIds.delete(taskId) : _selectedIds.add(taskId);
+  renderTasks(); updateBulkBar();
+}
+function updateBulkBar() {
+  let bar = document.getElementById('bulk-bar');
+  if (_selectedIds.size === 0) { if (bar) bar.remove(); return; }
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'bulk-bar'; bar.className = 'bulk-bar';
+    document.querySelector('.app').appendChild(bar);
+  }
+  bar.innerHTML = _selectedIds.size + ' selected &nbsp;' +
+    '<button onclick="bulkDelete()">Delete</button> ' +
+    '<button onclick="bulkDone()">Mark Done</button> ' +
+    '<button onclick="clearSelection()">Cancel</button>';
+}
+function bulkDelete() {
+  window._tasks=(window._tasks||[]).filter(t=>!_selectedIds.has(t.id));
+  clearSelection(); saveTasks(); renderTasks();
+}
+function bulkDone() {
+  (window._tasks||[]).forEach(t=>{if(_selectedIds.has(t.id))t.done=true;});
+  clearSelection(); saveTasks(); renderTasks();
+}
+function clearSelection() { _selectedIds.clear(); updateBulkBar(); renderTasks(); }
