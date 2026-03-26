@@ -482,3 +482,19 @@ function bulkDone() {
   clearSelection(); saveTasks(); renderTasks();
 }
 function clearSelection() { _selectedIds.clear(); updateBulkBar(); renderTasks(); }
+
+// ── Progress bar ──────────────────────────────────────────────
+function updateProgress() {
+  let bar = document.getElementById('progress-bar');
+  if (!bar) {
+    const wrap = document.createElement('div');
+    wrap.className = 'progress-wrap';
+    wrap.innerHTML = '<div id="progress-bar" class="progress-bar"></div>';
+    document.querySelector('.app')?.prepend(wrap);
+    bar = document.getElementById('progress-bar');
+  }
+  const tasks = window._tasks||[];
+  const pct = tasks.length===0 ? 0 : Math.round(tasks.filter(t=>t.done).length/tasks.length*100);
+  bar.style.width = pct+'%';
+  bar.title = pct+'% complete';
+}
