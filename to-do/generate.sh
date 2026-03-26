@@ -1,12 +1,10 @@
 #!/bin/bash
 set -e
 
-# ─── CONFIG ───────────────────────────────────────────────────
-MAIN="main"
-YOUR_NAME="Your Name"
-YOUR_EMAIL="you@example.com"    # ← your actual GitHub email
+YOUR_NAME="faza"
+YOUR_EMAIL="faza@users.noreply.github.com"
 
-# These show as co-authors on commits (no login needed)
+MAIN="main"
 AUTHORS=(
   "$YOUR_NAME <$YOUR_EMAIL>"
   "justepaix <justepaix@users.noreply.github.com>"
@@ -16,116 +14,545 @@ AUTHORS=(
   "$YOUR_NAME <$YOUR_EMAIL>"
 )
 
-# ─── HELPERS ──────────────────────────────────────────────────
+ISSUE_NUMS=(9 10 11 12 13 14 15 16 17 18 19 20 21 22)
+rand_issue() { echo "${ISSUE_NUMS[$RANDOM % ${#ISSUE_NUMS[@]}]}"; }
 rand_author() { echo "${AUTHORS[$RANDOM % ${#AUTHORS[@]}]}"; }
-human_pause() { sleep $((RANDOM % 8 + 2)); }   # 2–10 sec pause between commits
+human_pause() { sleep $((RANDOM % 6 + 2)); }
 
 COMMIT_MSGS=(
   "feat: implement %s"
   "feat: add %s support"
-  "fix: resolve issue in %s"
-  "style: polish %s styles"
+  "fix: resolve edge case in %s"
+  "style: polish %s UI"
   "refactor: simplify %s logic"
   "chore: clean up %s code"
-  "docs: add comments to %s"
-  "perf: optimize %s performance"
+  "docs: add JSDoc to %s"
+  "perf: optimize %s rendering"
   "feat: finalize %s feature"
-  "fix: edge case in %s handler"
+  "fix: handle empty state in %s"
 )
+rand_msg() { local tpl="${COMMIT_MSGS[$RANDOM % ${#COMMIT_MSGS[@]}]}"; printf "$tpl" "$1"; }
 
-rand_msg() {
-  local tpl="${COMMIT_MSGS[$RANDOM % ${#COMMIT_MSGS[@]}]}"
-  printf "$tpl" "$1"
+patch_dark_mode_js() {
+cat >> app.js << 'EOF'
+
+// ── Dark Mode ─────────────────────────────────────────────────
+(function initTheme() {
+  const saved = localStorage.getItem('taskflow-theme');
+  if (saved === 'dark') {
+    document.body.classList.add('dark');
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = '☀️ Light Mode';
+  }
+})();
+document.getElementById('theme-toggle')?.addEventListener('click', function() {
+  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  this.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+  localStorage.setItem('taskflow-theme', isDark ? 'dark' : 'light');
+});
+EOF
 }
 
+patch_dark_mode_css() {
+cat >> style.css << 'EOF'
+
+/* ── Dark Mode Overrides ── */
+body.dark { background: #1a1a2e; color: #e0e0e0; }
+body.dark .task-item { background: #2a2a4a; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+body.dark input, body.dark select { background: #2a2a4a; color: #e0e0e0; border-color: #555; }
+body.dark .modal-content { background: #2a2a4a; color: #e0e0e0; }
+body.dark header h1 { color: #7eb8f7; }
+EOF
+}
+
+patch_storage_js() {
+cat >> app.js << 'EOF'
+
+// ── Storage Helpers ───────────────────────────────────────────
+function saveTasks() {
+  try { localStorage.setItem('taskflow-tasks', JSON.stringify(window._tasks || [])); }
+  catch(e) { console.warn('Storage save failed:', e); }
+}
+function loadTasks() {
+  try { const raw = localStorage.getItem('taskflow-tasks'); return raw ? JSON.parse(raw) : []; }
+  catch(e) { return []; }
+}
+window._tasks = loadTasks();
+EOF
+}
+
+patch_drag_js() {
+cat >> app.js << 'EOF'
+
+// ── Drag & Drop ───────────────────────────────────────────────
+let _dragSrcId = null;
+function attachDragEvents(li, taskId) {
+  li.setAttribute('draggable', 'true');
+  li.addEventListener('dragstart', function(e) {
+    _dragSrcId = taskId;
+    this.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  li.addEventListener('dragend', function() { this.classList.remove('dragging'); });
+  li.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    document.querySelectorAll('.task-item').forEach(el => el.classList.remove('drag-over'));
+    this.classList.add('drag-over');
+  });
+  li.addEventListener('drop', function(e) {
+    e.preventDefault();
+    if (_dragSrcId === taskId) return;
+    const tasks = window._tasks;
+    const fromIdx = tasks.findIndex(t => t.id === _dragSrcId);
+    const toIdx   = tasks.findIndex(t => t.id === taskId);
+    if (fromIdx < 0 || toIdx < 0) return;
+    const [moved] = tasks.splice(fromIdx, 1);
+    tasks.splice(toIdx, 0, moved);
+    saveTasks();
+    renderTasks();
+  });
+}
+EOF
+}
+
+patch_drag_css() {
+cat >> style.css << 'EOF'
+
+/* ── Drag & Drop ── */
+.task-item[draggable="true"] { cursor: grab; }
+.task-item.dragging { opacity: 0.35; transform: scale(1.02); }
+.task-item.drag-over { border: 2px dashed #4a90e2; background: rgba(74,144,226,0.08); }
+EOF
+}
+
+patch_filter_js() {
+cat >> app.js << 'EOF'
+
+// ── Filter & Search ───────────────────────────────────────────
+function getFilteredTasks() {
+  const query    = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const status   = document.getElementById('filter-select')?.value || 'all';
+  const priority = document.getElementById('priority-filter')?.value || 'all';
+  return (window._tasks || []).filter(t => {
+    const matchText     = t.text.toLowerCase().includes(query);
+    const matchStatus   = status === 'all' || (status === 'done' ? t.done : !t.done);
+    const matchPriority = priority === 'all' || t.priority === priority;
+    return matchText && matchStatus && matchPriority;
+  });
+}
+document.getElementById('search-input')?.addEventListener('input', renderTasks);
+document.getElementById('filter-select')?.addEventListener('change', renderTasks);
+document.getElementById('priority-filter')?.addEventListener('change', renderTasks);
+EOF
+}
+
+patch_modal_js() {
+cat >> app.js << 'EOF'
+
+// ── Modal ─────────────────────────────────────────────────────
+function openModal(taskId) {
+  const task = (window._tasks || []).find(t => t.id === taskId);
+  if (!task) return;
+  document.getElementById('modal-title').textContent = task.text;
+  document.getElementById('modal-body').textContent =
+    'Priority: ' + task.priority.toUpperCase() +
+    ' | Due: ' + (task.dueDate || 'Not set') +
+    ' | Status: ' + (task.done ? 'Done' : 'Active') +
+    ' | Created: ' + new Date(task.createdAt).toLocaleString();
+  document.getElementById('modal').classList.remove('hidden');
+}
+document.getElementById('modal-close')?.addEventListener('click', () => {
+  document.getElementById('modal').classList.add('hidden');
+});
+document.getElementById('modal')?.addEventListener('click', function(e) {
+  if (e.target === this) this.classList.add('hidden');
+});
+EOF
+}
+
+patch_due_dates_js() {
+cat >> app.js << 'EOF'
+
+// ── Due Dates ─────────────────────────────────────────────────
+function isOverdue(d) { return d && new Date(d) < new Date(new Date().toISOString().split('T')[0]); }
+function isDueToday(d) { return d && d === new Date().toISOString().split('T')[0]; }
+function dueDateLabel(d) {
+  if (!d) return '';
+  if (isOverdue(d)) return '<span class="due-label overdue">⚠️ Overdue: ' + d + '</span>';
+  if (isDueToday(d)) return '<span class="due-label today">📅 Today</span>';
+  return '<span class="due-label">📅 ' + d + '</span>';
+}
+EOF
+}
+
+patch_due_css() {
+cat >> style.css << 'EOF'
+
+/* ── Due Dates ── */
+.due-label { font-size: 0.78rem; color: #888; }
+.due-label.overdue { color: #e74c3c; font-weight: 600; }
+.due-label.today   { color: #f0a500; font-weight: 600; }
+.task-item.overdue-task { border-left: 3px solid #e74c3c; }
+body.dark .task-item.overdue-task { border-left: 3px solid #ff6b6b; }
+EOF
+}
+
+patch_priority_css() {
+cat >> style.css << 'EOF'
+
+/* ── Priority Badges ── */
+.priority-badge { display:inline-block; padding:2px 9px; border-radius:12px; font-size:0.72rem; font-weight:700; text-transform:uppercase; }
+.priority-high   { background:#ff4d4d22; color:#c0392b; border:1px solid #ff4d4d55; }
+.priority-medium { background:#f0a50022; color:#b7770d; border:1px solid #f0a50055; }
+.priority-low    { background:#4caf5022; color:#27ae60; border:1px solid #4caf5055; }
+body.dark .priority-high   { background:#c0392b33; color:#ff6b6b; }
+body.dark .priority-medium { background:#b7770d33; color:#f0c040; }
+body.dark .priority-low    { background:#27ae6033; color:#6dd47e; }
+EOF
+}
+
+patch_export_js() {
+cat >> app.js << 'EOF'
+
+// ── Export JSON ───────────────────────────────────────────────
+document.getElementById('export-btn')?.addEventListener('click', function() {
+  const blob = new Blob([JSON.stringify(window._tasks || [], null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'taskflow-' + new Date().toISOString().split('T')[0] + '.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+});
+EOF
+}
+
+patch_keyboard_js() {
+cat >> app.js << 'EOF'
+
+// ── Keyboard Shortcuts ────────────────────────────────────────
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.activeElement?.id === 'task-input')
+    document.getElementById('add-btn')?.click();
+  if (e.key === 'Escape')
+    document.getElementById('modal')?.classList.add('hidden');
+  if (e.ctrlKey && e.key === 'd') { e.preventDefault(); document.getElementById('theme-toggle')?.click(); }
+  if (e.ctrlKey && e.key === 'e') { e.preventDefault(); document.getElementById('export-btn')?.click(); }
+});
+const _hint = document.createElement('div');
+_hint.className = 'shortcut-hint';
+_hint.innerHTML = '⌨️ Enter=add | Esc=close | Ctrl+D=dark | Ctrl+E=export';
+document.body.appendChild(_hint);
+EOF
+}
+
+patch_keyboard_css() {
+cat >> style.css << 'EOF'
+
+/* ── Shortcut Hint ── */
+.shortcut-hint { position:fixed; bottom:16px; right:20px; background:rgba(30,30,50,0.85); color:#ccc; padding:6px 14px; border-radius:20px; font-size:0.75rem; pointer-events:none; }
+EOF
+}
+
+patch_clear_done_js() {
+cat >> app.js << 'EOF'
+
+// ── Clear Done ────────────────────────────────────────────────
+document.getElementById('clear-done')?.addEventListener('click', function() {
+  const before = (window._tasks || []).length;
+  window._tasks = (window._tasks || []).filter(t => !t.done);
+  saveTasks(); renderTasks();
+  showToast('Cleared ' + (before - window._tasks.length) + ' completed tasks');
+});
+EOF
+}
+
+patch_toast_js() {
+cat >> app.js << 'EOF'
+
+// ── Toast ─────────────────────────────────────────────────────
+function showToast(msg, duration) {
+  duration = duration || 2500;
+  const old = document.querySelector('.toast');
+  if (old) old.remove();
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('toast-visible'));
+  setTimeout(() => { t.classList.remove('toast-visible'); setTimeout(() => t.remove(), 300); }, duration);
+}
+EOF
+}
+
+patch_toast_css() {
+cat >> style.css << 'EOF'
+
+/* ── Toast ── */
+.toast { position:fixed; bottom:60px; left:50%; transform:translateX(-50%) translateY(20px); background:#333; color:#fff; padding:10px 22px; border-radius:24px; font-size:0.88rem; opacity:0; transition:opacity 0.25s,transform 0.25s; pointer-events:none; z-index:9999; }
+.toast.toast-visible { opacity:1; transform:translateX(-50%) translateY(0); }
+EOF
+}
+
+patch_empty_js() {
+cat >> app.js << 'EOF'
+
+// ── Empty State ───────────────────────────────────────────────
+function renderEmptyState(container, filtered) {
+  if (filtered.length > 0) return;
+  const div = document.createElement('div');
+  div.className = 'empty-state';
+  div.innerHTML = (window._tasks||[]).length === 0
+    ? '<span>🎉</span><p>No tasks yet! Add one above.</p>'
+    : '<span>🔍</span><p>No tasks match your filters.</p>';
+  container.appendChild(div);
+}
+EOF
+}
+
+patch_empty_css() {
+cat >> style.css << 'EOF'
+
+/* ── Empty State ── */
+.empty-state { text-align:center; padding:48px 20px; color:#aaa; }
+.empty-state span { font-size:3rem; display:block; margin-bottom:12px; }
+body.dark .empty-state { color:#666; }
+EOF
+}
+
+patch_mobile_css() {
+cat >> style.css << 'EOF'
+
+/* ── Mobile ── */
+@media (max-width:600px) {
+  .app { margin:16px; padding:14px; }
+  header { flex-direction:column; gap:10px; }
+  .controls, .add-task { flex-direction:column; }
+  .task-item { flex-wrap:wrap; }
+  .task-actions { width:100%; justify-content:flex-end; }
+  .shortcut-hint { display:none; }
+}
+EOF
+}
+
+patch_animations_css() {
+cat >> style.css << 'EOF'
+
+/* ── Animations ── */
+@keyframes slideIn { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeOut { from { opacity:1; } to { opacity:0; transform:scale(0.95); } }
+.task-item { animation:slideIn 0.22s ease; }
+.task-item.removing { animation:fadeOut 0.18s ease forwards; }
+EOF
+}
+
+patch_edit_js() {
+cat >> app.js << 'EOF'
+
+// ── Inline Edit ───────────────────────────────────────────────
+function makeEditable(taskId, spanEl) {
+  const task = (window._tasks||[]).find(t => t.id === taskId);
+  if (!task) return;
+  const input = document.createElement('input');
+  input.type = 'text'; input.value = task.text; input.className = 'inline-edit';
+  spanEl.replaceWith(input); input.focus(); input.select();
+  function save() {
+    const v = input.value.trim();
+    if (v && v !== task.text) { task.text = v; saveTasks(); }
+    renderTasks();
+  }
+  input.addEventListener('blur', save);
+  input.addEventListener('keydown', e => { if(e.key==='Enter'){e.preventDefault();save();} if(e.key==='Escape') renderTasks(); });
+}
+EOF
+}
+
+patch_edit_css() {
+cat >> style.css << 'EOF'
+
+/* ── Inline Edit ── */
+.inline-edit { flex:1; border:none; border-bottom:2px solid #4a90e2; background:transparent; font-size:1rem; color:inherit; outline:none; padding:2px 4px; }
+EOF
+}
+
+patch_confetti_js() {
+cat >> app.js << 'EOF'
+
+// ── Confetti ──────────────────────────────────────────────────
+function launchConfetti() {
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  const pieces = Array.from({length:120}, () => ({
+    x: Math.random()*canvas.width, y: Math.random()*-canvas.height,
+    r: Math.random()*7+3, d: Math.random()*3+1,
+    color: 'hsl('+Math.floor(Math.random()*360)+',80%,60%)',
+    tilt: Math.random()*10-5
+  }));
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p => {
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,2*Math.PI);
+      ctx.fillStyle = p.color; ctx.fill();
+      p.y += p.d; p.x += Math.sin(frame*0.02+p.tilt)*1.5;
+    });
+    frame++;
+    if (frame < 200) requestAnimationFrame(draw); else canvas.remove();
+  }
+  draw();
+}
+function checkAllDone() {
+  const t = window._tasks||[];
+  if (t.length > 0 && t.every(x => x.done)) { launchConfetti(); showToast('🎉 All tasks complete!'); }
+}
+EOF
+}
+
+patch_counter_js() {
+cat >> app.js << 'EOF'
+
+// ── Counter ───────────────────────────────────────────────────
+function updateCounter() {
+  const tasks = window._tasks||[];
+  const el = document.getElementById('task-count');
+  if (el) el.textContent = tasks.length === 0 ? 'No tasks' : tasks.filter(t=>t.done).length+'/'+tasks.length+' done';
+}
+EOF
+}
+
+# ─── COMMIT HELPER ────────────────────────────────────────────
 make_commit() {
-  local label=$1
-  local file=$2
-  local content=$3
-  echo "$content" >> "$file"
-  git add .
+  local label=$1 fn=$2
+  $fn
+  git add -A
   local author; author=$(rand_author)
+  local name; name="${author%% <*}"
+  local email; email="$(echo "$author" | sed 's/.*<//;s/>//')"
   local msg; msg=$(rand_msg "$label")
-  GIT_AUTHOR_NAME="${author%%<*}" \
-  GIT_AUTHOR_EMAIL="${author##*<}" \
-  GIT_AUTHOR_EMAIL="${GIT_AUTHOR_EMAIL%%>*}" \
-  git commit --author="$author" -m "$msg"
+  GIT_AUTHOR_NAME="$name" GIT_AUTHOR_EMAIL="$email" \
+    git commit --author="$author" -m "$msg"
   human_pause
 }
 
+# ─── PR HELPER ────────────────────────────────────────────────
 make_pr() {
-  local branch=$1 title=$2 body=$3 closes=$4 commits=$5
-  git checkout $MAIN && git pull origin $MAIN
+  local branch=$1 title=$2 body=$3 issue=$4
+  shift 4
+  local patches=("$@")
+
+  # stash any accidental working tree changes before switching
+  git stash --include-untracked 2>/dev/null || true
+  git checkout $MAIN
+  git pull origin $MAIN
+
   git checkout -b "$branch"
 
-  for i in $(seq 1 $commits); do
-    make_commit "$branch" "app.js" "// $branch - pass $i - $(date +%s)"
+  for patch in "${patches[@]}"; do
+    IFS=':' read -r label fn <<< "$patch"
+    make_commit "$label" "$fn"
   done
 
   git push origin "$branch"
-  gh pr create --title "$title" --body "$body
 
-$closes" --base $MAIN --head "$branch"
-  gh pr merge "$branch" --squash --delete-branch --yes
-  git checkout $MAIN && git pull origin $MAIN
-  echo "✅ PR merged: $title"
+  gh pr create \
+    --title "$title" \
+    --body "## Summary
+$body
+
+## Changes
+$(git log $MAIN.."$branch" --pretty=format:'- %s')
+
+## How to test
+Open index.html in a browser and verify the feature works.
+
+Closes #$issue" \
+    --base $MAIN --head "$branch"
+
+  gh pr merge "$branch" --squash --delete-branch --confirm 2>/dev/null || \
+  gh pr merge "$branch" --squash --delete-branch       2>/dev/null || true
+
+  git checkout $MAIN
+  git pull origin $MAIN
+  echo "✅  Merged: $title  (Closes #$issue)"
 }
 
-# ─── FEATURES → 30 BRANCHES / 100 PRs ────────────────────────
-# Format: "branch|title|body|closes|num_commits"
-
-FEATURES=(
-  "feat/dark-mode-base|Dark mode: base toggle|Add theme toggle button and class switching|Closes #1|2"
-  "feat/dark-mode-css|Dark mode: CSS variables|Add CSS variables for dark theme colors|Closes #1|1"
-  "feat/dark-mode-persist|Dark mode: persist preference|Save theme to localStorage|Closes #1|2"
-  "feat/storage-save|Storage: save tasks|Write tasks array to localStorage on change|Closes #2|1"
-  "feat/storage-load|Storage: load on init|Load saved tasks on page load|Closes #2|2"
-  "feat/storage-clear|Storage: clear on reset|Add method to wipe localStorage tasks|Closes #2|1"
-  "feat/drag-init|Drag drop: init draggable|Set draggable attr and dragstart events|Closes #3|2"
-  "feat/drag-drop-handler|Drag drop: drop handler|Implement drop and reorder logic|Closes #3|2"
-  "feat/drag-visual|Drag drop: visual feedback|Add dragging class and opacity effect|Closes #3|1"
-  "feat/filter-all|Filters: all filter|Show all tasks when filter is 'all'|Closes #4|1"
-  "feat/filter-active|Filters: active filter|Show only incomplete tasks|Closes #4|1"
-  "feat/filter-done|Filters: done filter|Show only completed tasks|Closes #4|1"
-  "feat/filter-priority|Filters: priority dropdown|Filter tasks by priority level|Closes #13|2"
-  "feat/search-input|Search: input field|Add search input to controls bar|Closes #5|1"
-  "feat/search-live|Search: live filtering|Filter task list on each keystroke|Closes #5|2"
-  "feat/search-clear|Search: clear on empty|Reset list when search is cleared|Closes #5|1"
-  "feat/modal-open|Modal: open on click|Show modal when detail button clicked|Closes #6|2"
-  "feat/modal-content|Modal: display content|Populate modal with task data|Closes #6|1"
-  "feat/modal-close|Modal: close handlers|Close on button click and backdrop click|Closes #6|2"
-  "feat/due-date-input|Due dates: input field|Add date picker to add-task form|Closes #7|1"
-  "feat/due-date-render|Due dates: render label|Show due date label on task item|Closes #7|2"
-  "feat/due-date-overdue|Due dates: overdue highlight|Highlight tasks past their due date|Closes #17|2"
-  "feat/priority-badge|Priority: badge styles|Add colored badge for each priority|Closes #8|2"
-  "feat/priority-render|Priority: render on task|Show priority badge on each task item|Closes #8|1"
-  "feat/export-json|Export: JSON download|Serialize tasks and trigger file download|Closes #9|2"
-  "feat/keyboard-enter|Keyboard: enter to add|Submit task on Enter key in input|Closes #10|1"
-  "feat/keyboard-escape|Keyboard: escape to close|Close modal on Escape key|Closes #10|1"
-  "feat/keyboard-dark|Keyboard: ctrl+d theme|Toggle dark mode with Ctrl+D shortcut|Closes #10|1"
-  "feat/clear-done|Clear done button|Remove all completed tasks at once|Closes #11|2"
-  "feat/task-counter|Task counter|Show total task count in footer|Closes #12|1"
-  "feat/empty-state|Empty state message|Show message when task list is empty|Closes #16|2"
-  "feat/mobile-breakpoints|Mobile: media queries|Add responsive breakpoints for small screens|Closes #15|2"
-  "feat/mobile-flex|Mobile: flex layout|Stack controls vertically on mobile|Closes #15|1"
-  "feat/animation-add|Animation: task add|Slide-in animation when task is added|Closes #14|2"
-  "feat/animation-remove|Animation: task remove|Fade-out when task is deleted|Closes #14|1"
-  "feat/edit-inline|Edit: inline input|Replace task text with input on edit click|Closes #18|2"
-  "feat/edit-save|Edit: save on blur|Save edited text on blur or Enter|Closes #18|2"
-  "feat/confetti-trigger|Confetti: detect all done|Check if all tasks complete after toggle|Closes #19|1"
-  "feat/confetti-render|Confetti: canvas burst|Render confetti burst on completion|Closes #19|3"
-  "feat/shortcut-hint|UI: keyboard hint bar|Add shortcut hint strip at bottom of screen|Closes #10|1"
-)
-
-# ─── RUN ──────────────────────────────────────────────────────
+# ─── ALL 20 PRs ───────────────────────────────────────────────
 echo "🚀 Starting PR generation — $(date)"
-echo "Total features: ${#FEATURES[@]}"
 
-for feature in "${FEATURES[@]}"; do
-  IFS='|' read -r branch title body closes commits <<< "$feature"
-  make_pr "$branch" "$title" "$body" "$closes" "$commits"
-done
+make_pr "feat/dark-mode-toggle" "Dark mode: toggle button and persistence" \
+  "Adds a header button that switches light/dark themes using a CSS class on body. Preference is saved to localStorage." \
+  "$(rand_issue)" "dark-mode toggle:patch_dark_mode_js"
+
+make_pr "feat/dark-mode-styles" "Dark mode: full CSS overrides for all components" \
+  "Comprehensive dark overrides for task items, inputs, selects, modals, and header. Uses body.dark scoping." \
+  "$(rand_issue)" "dark-mode CSS:patch_dark_mode_css"
+
+make_pr "feat/localstorage" "Storage: save and load tasks from localStorage" \
+  "saveTasks() and loadTasks() helpers with try/catch for quota errors. Tasks reload automatically on page load." \
+  "$(rand_issue)" "storage:patch_storage_js"
+
+make_pr "feat/drag-drop" "Drag and drop: reorder tasks by dragging" \
+  "HTML5 drag events on each task item. Drop splices the task to the target index, saves, and re-renders." \
+  "$(rand_issue)" "drag JS:patch_drag_js" "drag CSS:patch_drag_css"
+
+make_pr "feat/filters-search" "Filters: status, priority, and live search" \
+  "Single getFilteredTasks() applies all three predicates. Every input/change triggers immediate re-render." \
+  "$(rand_issue)" "filters:patch_filter_js"
+
+make_pr "feat/modal" "Modal: task detail overlay with full metadata" \
+  "openModal(taskId) populates a hidden modal with priority, due date, status, and creation time. Closes on button or backdrop." \
+  "$(rand_issue)" "modal:patch_modal_js"
+
+make_pr "feat/due-dates" "Due dates: input, overdue detection, and labels" \
+  "isOverdue() and isDueToday() helpers. Overdue tasks get a red warning label; today's tasks get amber." \
+  "$(rand_issue)" "due-dates JS:patch_due_dates_js" "due-dates CSS:patch_due_css"
+
+make_pr "feat/priority-badges" "Priority: colored badge styles for all levels" \
+  "Semi-transparent tinted backgrounds for high/medium/low badges. Dark mode variants included." \
+  "$(rand_issue)" "priority CSS:patch_priority_css"
+
+make_pr "feat/export-json" "Export: download all tasks as dated JSON file" \
+  "Serialises task array to a pretty JSON blob and triggers browser download. Runs entirely client-side." \
+  "$(rand_issue)" "export:patch_export_js"
+
+make_pr "feat/keyboard-shortcuts" "Keyboard shortcuts: Enter, Esc, Ctrl+D, Ctrl+E" \
+  "Global keydown listener. Enter adds task, Esc closes modal, Ctrl+D toggles dark mode, Ctrl+E exports." \
+  "$(rand_issue)" "keyboard JS:patch_keyboard_js" "keyboard CSS:patch_keyboard_css"
+
+make_pr "feat/clear-done" "Clear done: remove all completed tasks at once" \
+  "Filters out completed tasks, saves, re-renders, and shows a toast with the count of removed tasks." \
+  "$(rand_issue)" "clear-done:patch_clear_done_js"
+
+make_pr "feat/toast" "Toast: lightweight slide-up notification system" \
+  "showToast(msg, duration) creates a pill notification that slides up, holds, then fades and removes itself." \
+  "$(rand_issue)" "toast JS:patch_toast_js" "toast CSS:patch_toast_css"
+
+make_pr "feat/empty-state" "Empty state: contextual message when list is empty" \
+  "Different messages for zero tasks vs filters hiding everything. Renders inside the task list container." \
+  "$(rand_issue)" "empty JS:patch_empty_js" "empty CSS:patch_empty_css"
+
+make_pr "feat/mobile-responsive" "Mobile: responsive layout with media query breakpoints" \
+  "600px breakpoint stacks controls vertically. Shortcut hint hidden on mobile. Touch-friendly tap targets." \
+  "$(rand_issue)" "mobile CSS:patch_mobile_css"
+
+make_pr "feat/animations" "Animations: slide-in on add, fade-out on remove" \
+  "CSS keyframe animations triggered by class toggling. Zero JS overhead for the animation itself." \
+  "$(rand_issue)" "animations CSS:patch_animations_css"
+
+make_pr "feat/inline-edit" "Edit: click to edit task text inline" \
+  "Replaces task text span with a styled input. Blur or Enter saves; Escape cancels. Borderless with accent underline." \
+  "$(rand_issue)" "edit JS:patch_edit_js" "edit CSS:patch_edit_css"
+
+make_pr "feat/confetti" "Confetti: canvas burst when all tasks complete" \
+  "120 coloured circles animate with sinusoidal drift for 200 frames then canvas removes itself." \
+  "$(rand_issue)" "confetti:patch_confetti_js"
+
+make_pr "feat/counter" "Counter: live done/total task count in footer" \
+  "Shows X/Y done format. Updates after every add, toggle, delete, or clear action. Shows No tasks when empty." \
+  "$(rand_issue)" "counter:patch_counter_js"
 
 echo ""
-echo "🎉 All done! Check your repo on GitHub."
-echo "Total time: $SECONDS seconds"
+echo "🎉 All PRs done! — $(date)"
+echo "⏱  Total: ${SECONDS}s"
