@@ -282,3 +282,13 @@ document.getElementById('modal-close')?.addEventListener('click', () => {
 document.getElementById('modal')?.addEventListener('click', function(e) {
   if (e.target === this) this.classList.add('hidden');
 });
+
+// ── Due Dates ─────────────────────────────────────────────────
+function isOverdue(d) { return d && new Date(d) < new Date(new Date().toISOString().split('T')[0]); }
+function isDueToday(d) { return d && d === new Date().toISOString().split('T')[0]; }
+function dueDateLabel(d) {
+  if (!d) return '';
+  if (isOverdue(d)) return '<span class="due-label overdue">⚠️ Overdue: ' + d + '</span>';
+  if (isDueToday(d)) return '<span class="due-label today">📅 Today</span>';
+  return '<span class="due-label">📅 ' + d + '</span>';
+}
