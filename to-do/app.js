@@ -247,3 +247,19 @@ function attachDragEvents(li, taskId) {
     renderTasks();
   });
 }
+
+// ── Filter & Search ───────────────────────────────────────────
+function getFilteredTasks() {
+  const query    = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const status   = document.getElementById('filter-select')?.value || 'all';
+  const priority = document.getElementById('priority-filter')?.value || 'all';
+  return (window._tasks || []).filter(t => {
+    const matchText     = t.text.toLowerCase().includes(query);
+    const matchStatus   = status === 'all' || (status === 'done' ? t.done : !t.done);
+    const matchPriority = priority === 'all' || t.priority === priority;
+    return matchText && matchStatus && matchPriority;
+  });
+}
+document.getElementById('search-input')?.addEventListener('input', renderTasks);
+document.getElementById('filter-select')?.addEventListener('change', renderTasks);
+document.getElementById('priority-filter')?.addEventListener('change', renderTasks);
