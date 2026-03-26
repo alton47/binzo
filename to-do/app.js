@@ -316,3 +316,11 @@ const _hint = document.createElement('div');
 _hint.className = 'shortcut-hint';
 _hint.innerHTML = '⌨️ Enter=add | Esc=close | Ctrl+D=dark | Ctrl+E=export';
 document.body.appendChild(_hint);
+
+// ── Clear Done ────────────────────────────────────────────────
+document.getElementById('clear-done')?.addEventListener('click', function() {
+  const before = (window._tasks || []).length;
+  window._tasks = (window._tasks || []).filter(t => !t.done);
+  saveTasks(); renderTasks();
+  showToast('Cleared ' + (before - window._tasks.length) + ' completed tasks');
+});
