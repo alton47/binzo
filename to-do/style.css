@@ -283,3 +283,7 @@ body.dark .empty-state { color:#666; }
 .progress-wrap { height:6px; background:#e0e0e0; border-radius:3px; margin-bottom:16px; overflow:hidden; }
 .progress-bar { height:100%; background:linear-gradient(90deg,#4a90e2,#27ae60); border-radius:3px; transition:width 0.4s ease; }
 body.dark .progress-wrap { background:#333; }
+
+/* ── Tags ── */
+.tag { display:inline-block; background:#e8f0fe; color:#3a6bc4; border-radius:10px; padding:1px 8px; font-size:0.72rem; margin-right:3px; }
+body.dark .tag { background:#1e3a6e; color:#7eb8f7; }
