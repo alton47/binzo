@@ -308,3 +308,9 @@ body.dark .stat-chip { background:#2a2a4a; color:#aaa; }
 button { position:relative; overflow:hidden; }
 button::after { content:''; position:absolute; inset:0; background:rgba(255,255,255,0.25); opacity:0; border-radius:inherit; transition:opacity 0.3s; }
 button:active::after { opacity:1; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:#4a90e2; border-radius:3px; }
+body.dark ::-webkit-scrollbar-thumb { background:#7eb8f7; }
