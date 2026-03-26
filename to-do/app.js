@@ -401,3 +401,10 @@ function updateCounter() {
   const el = document.getElementById('task-count');
   if (el) el.textContent = tasks.length === 0 ? 'No tasks' : tasks.filter(t=>t.done).length+'/'+tasks.length+' done';
 }
+
+// ── Scroll to new task ────────────────────────────────────────
+function scrollToLatest() {
+  const list = document.getElementById('task-list');
+  if (list && list.lastElementChild)
+    list.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
