@@ -555,3 +555,13 @@ function toggleFocusMode() {
   btn.id='focus-btn'; btn.textContent='🎯 Focus Mode'; btn.onclick=toggleFocusMode;
   header.appendChild(btn);
 })();
+
+// ── Welcome banner ────────────────────────────────────────────
+(function showWelcome(){
+  if (localStorage.getItem('taskflow-welcomed')) return;
+  const b=document.createElement('div');
+  b.className='welcome-banner';
+  b.innerHTML='<strong>👋 Welcome to TaskFlow!</strong> Add your first task above. Drag to reorder, Ctrl+D for dark mode.' +
+    '<button onclick="this.parentNode.remove();localStorage.setItem(\'taskflow-welcomed\',\'1\')">Got it</button>';
+  document.querySelector('.app')?.insertBefore(b,document.querySelector('.add-task'));
+})();
