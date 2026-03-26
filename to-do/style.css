@@ -287,3 +287,10 @@ body.dark .progress-wrap { background:#333; }
 /* ── Tags ── */
 .tag { display:inline-block; background:#e8f0fe; color:#3a6bc4; border-radius:10px; padding:1px 8px; font-size:0.72rem; margin-right:3px; }
 body.dark .tag { background:#1e3a6e; color:#7eb8f7; }
+
+/* ── Print ── */
+@media print {
+  .controls,.add-task,.task-actions,header button,.shortcut-hint,.footer button { display:none !important; }
+  body { background:white; color:black; }
+  .task-item { box-shadow:none; border:1px solid #ddd; break-inside:avoid; }
+}
