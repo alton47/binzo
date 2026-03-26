@@ -292,3 +292,13 @@ function dueDateLabel(d) {
   if (isDueToday(d)) return '<span class="due-label today">📅 Today</span>';
   return '<span class="due-label">📅 ' + d + '</span>';
 }
+
+// ── Export JSON ───────────────────────────────────────────────
+document.getElementById('export-btn')?.addEventListener('click', function() {
+  const blob = new Blob([JSON.stringify(window._tasks || [], null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'taskflow-' + new Date().toISOString().split('T')[0] + '.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+});
