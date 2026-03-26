@@ -408,3 +408,19 @@ function scrollToLatest() {
   if (list && list.lastElementChild)
     list.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
+
+// ── Character counter ─────────────────────────────────────────
+(function initCharCount() {
+  const input = document.getElementById('task-input');
+  if (!input) return;
+  const counter = document.createElement('span');
+  counter.className = 'char-count';
+  counter.textContent = '0/100';
+  input.parentNode.insertBefore(counter, input.nextSibling);
+  input.addEventListener('input', () => {
+    const len = input.value.length;
+    counter.textContent = len + '/100';
+    counter.style.color = len > 90 ? '#e74c3c' : '#aaa';
+    if (len > 100) input.value = input.value.slice(0, 100);
+  });
+})();

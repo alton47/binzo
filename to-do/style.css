@@ -270,3 +270,6 @@ body.dark .empty-state { color:#666; }
 
 /* ── Inline Edit ── */
 .inline-edit { flex:1; border:none; border-bottom:2px solid #4a90e2; background:transparent; font-size:1rem; color:inherit; outline:none; padding:2px 4px; }
+
+/* ── Char Count ── */
+.char-count { font-size:0.75rem; color:#aaa; align-self:center; white-space:nowrap; }
