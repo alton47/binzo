@@ -394,3 +394,10 @@ function checkAllDone() {
   const t = window._tasks||[];
   if (t.length > 0 && t.every(x => x.done)) { launchConfetti(); showToast('🎉 All tasks complete!'); }
 }
+
+// ── Counter ───────────────────────────────────────────────────
+function updateCounter() {
+  const tasks = window._tasks||[];
+  const el = document.getElementById('task-count');
+  if (el) el.textContent = tasks.length === 0 ? 'No tasks' : tasks.filter(t=>t.done).length+'/'+tasks.length+' done';
+}
