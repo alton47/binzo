@@ -324,3 +324,15 @@ document.getElementById('clear-done')?.addEventListener('click', function() {
   saveTasks(); renderTasks();
   showToast('Cleared ' + (before - window._tasks.length) + ' completed tasks');
 });
+
+// ── Toast ─────────────────────────────────────────────────────
+function showToast(msg, duration) {
+  duration = duration || 2500;
+  const old = document.querySelector('.toast');
+  if (old) old.remove();
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('toast-visible'));
+  setTimeout(() => { t.classList.remove('toast-visible'); setTimeout(() => t.remove(), 300); }, duration);
+}
