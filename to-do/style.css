@@ -294,3 +294,8 @@ body.dark .tag { background:#1e3a6e; color:#7eb8f7; }
   body { background:white; color:black; }
   .task-item { box-shadow:none; border:1px solid #ddd; break-inside:avoid; }
 }
+
+/* ── Stats ── */
+.stats-panel { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+.stat-chip { background:#f0f4ff; border-radius:20px; padding:4px 14px; font-size:0.8rem; color:#555; }
+body.dark .stat-chip { background:#2a2a4a; color:#aaa; }
