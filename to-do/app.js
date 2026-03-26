@@ -207,3 +207,14 @@ document.getElementById('theme-toggle')?.addEventListener('click', function() {
   this.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
   localStorage.setItem('taskflow-theme', isDark ? 'dark' : 'light');
 });
+
+// ── Storage Helpers ───────────────────────────────────────────
+function saveTasks() {
+  try { localStorage.setItem('taskflow-tasks', JSON.stringify(window._tasks || [])); }
+  catch(e) { console.warn('Storage save failed:', e); }
+}
+function loadTasks() {
+  try { const raw = localStorage.getItem('taskflow-tasks'); return raw ? JSON.parse(raw) : []; }
+  catch(e) { return []; }
+}
+window._tasks = loadTasks();
