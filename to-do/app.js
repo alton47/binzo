@@ -522,3 +522,19 @@ function getStats() {
     low:t.filter(x=>x.priority==='low').length
   };
 }
+
+// ── Undo delete ───────────────────────────────────────────────
+let _lastDeleted = null;
+function deleteTaskWithUndo(taskId) {
+  const idx=(window._tasks||[]).findIndex(t=>t.id===taskId);
+  if (idx<0) return;
+  _lastDeleted={task:window._tasks[idx],idx};
+  window._tasks.splice(idx,1);
+  saveTasks(); renderTasks();
+  showToast('Deleted — <u style="cursor:pointer" onclick="undoDelete()">Undo</u>',4000);
+}
+function undoDelete() {
+  if (!_lastDeleted) return;
+  window._tasks.splice(_lastDeleted.idx,0,_lastDeleted.task);
+  _lastDeleted=null; saveTasks(); renderTasks(); showToast('Task restored');
+}
