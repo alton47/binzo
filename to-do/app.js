@@ -302,3 +302,17 @@ document.getElementById('export-btn')?.addEventListener('click', function() {
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(a.href);
 });
+
+// ── Keyboard Shortcuts ────────────────────────────────────────
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.activeElement?.id === 'task-input')
+    document.getElementById('add-btn')?.click();
+  if (e.key === 'Escape')
+    document.getElementById('modal')?.classList.add('hidden');
+  if (e.ctrlKey && e.key === 'd') { e.preventDefault(); document.getElementById('theme-toggle')?.click(); }
+  if (e.ctrlKey && e.key === 'e') { e.preventDefault(); document.getElementById('export-btn')?.click(); }
+});
+const _hint = document.createElement('div');
+_hint.className = 'shortcut-hint';
+_hint.innerHTML = '⌨️ Enter=add | Esc=close | Ctrl+D=dark | Ctrl+E=export';
+document.body.appendChild(_hint);
