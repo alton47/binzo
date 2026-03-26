@@ -230,3 +230,12 @@ body.dark header h1 { color: #7eb8f7; }
 .due-label.today   { color: #f0a500; font-weight: 600; }
 .task-item.overdue-task { border-left: 3px solid #e74c3c; }
 body.dark .task-item.overdue-task { border-left: 3px solid #ff6b6b; }
+
+/* ── Priority Badges ── */
+.priority-badge { display:inline-block; padding:2px 9px; border-radius:12px; font-size:0.72rem; font-weight:700; text-transform:uppercase; }
+.priority-high   { background:#ff4d4d22; color:#c0392b; border:1px solid #ff4d4d55; }
+.priority-medium { background:#f0a50022; color:#b7770d; border:1px solid #f0a50055; }
+.priority-low    { background:#4caf5022; color:#27ae60; border:1px solid #4caf5055; }
+body.dark .priority-high   { background:#c0392b33; color:#ff6b6b; }
+body.dark .priority-medium { background:#b7770d33; color:#f0c040; }
+body.dark .priority-low    { background:#27ae6033; color:#6dd47e; }
