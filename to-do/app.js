@@ -511,3 +511,14 @@ function copyTaskText(taskId) {
     .then(()=>showToast('📋 Copied to clipboard'))
     .catch(()=>showToast('Copy failed'));
 }
+
+// ── Stats ─────────────────────────────────────────────────────
+function getStats() {
+  const t=window._tasks||[];
+  return {
+    total:t.length, done:t.filter(x=>x.done).length,
+    high:t.filter(x=>x.priority==='high').length,
+    medium:t.filter(x=>x.priority==='medium').length,
+    low:t.filter(x=>x.priority==='low').length
+  };
+}
