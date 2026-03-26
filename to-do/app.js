@@ -218,3 +218,32 @@ function loadTasks() {
   catch(e) { return []; }
 }
 window._tasks = loadTasks();
+
+// ── Drag & Drop ───────────────────────────────────────────────
+let _dragSrcId = null;
+function attachDragEvents(li, taskId) {
+  li.setAttribute('draggable', 'true');
+  li.addEventListener('dragstart', function(e) {
+    _dragSrcId = taskId;
+    this.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  li.addEventListener('dragend', function() { this.classList.remove('dragging'); });
+  li.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    document.querySelectorAll('.task-item').forEach(el => el.classList.remove('drag-over'));
+    this.classList.add('drag-over');
+  });
+  li.addEventListener('drop', function(e) {
+    e.preventDefault();
+    if (_dragSrcId === taskId) return;
+    const tasks = window._tasks;
+    const fromIdx = tasks.findIndex(t => t.id === _dragSrcId);
+    const toIdx   = tasks.findIndex(t => t.id === taskId);
+    if (fromIdx < 0 || toIdx < 0) return;
+    const [moved] = tasks.splice(fromIdx, 1);
+    tasks.splice(toIdx, 0, moved);
+    saveTasks();
+    renderTasks();
+  });
+}
