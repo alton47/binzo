@@ -314,3 +314,7 @@ button:active::after { opacity:1; }
 ::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:#4a90e2; border-radius:3px; }
 body.dark ::-webkit-scrollbar-thumb { background:#7eb8f7; }
+
+/* ── Selection ── */
+::selection { background:#4a90e2; color:white; }
+body.dark ::selection { background:#7eb8f7; color:#1a1a2e; }
