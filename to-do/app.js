@@ -439,3 +439,17 @@ function sortTasks(tasks, method) {
   if (method === 'alpha') return copy.sort((a,b) => a.text.localeCompare(b.text));
   return copy;
 }
+
+// ── Sort dropdown ─────────────────────────────────────────────
+(function initSortControl() {
+  const controls = document.querySelector('.controls');
+  if (!controls) return;
+  const sel = document.createElement('select');
+  sel.id = 'sort-select';
+  sel.innerHTML = '<option value="default">Sort: Default</option>' +
+    '<option value="priority">Sort: Priority</option>' +
+    '<option value="due">Sort: Due Date</option>' +
+    '<option value="alpha">Sort: A-Z</option>';
+  controls.appendChild(sel);
+  sel.addEventListener('change', renderTasks);
+})();
