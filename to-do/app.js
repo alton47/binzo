@@ -263,3 +263,22 @@ function getFilteredTasks() {
 document.getElementById('search-input')?.addEventListener('input', renderTasks);
 document.getElementById('filter-select')?.addEventListener('change', renderTasks);
 document.getElementById('priority-filter')?.addEventListener('change', renderTasks);
+
+// ── Modal ─────────────────────────────────────────────────────
+function openModal(taskId) {
+  const task = (window._tasks || []).find(t => t.id === taskId);
+  if (!task) return;
+  document.getElementById('modal-title').textContent = task.text;
+  document.getElementById('modal-body').textContent =
+    'Priority: ' + task.priority.toUpperCase() +
+    ' | Due: ' + (task.dueDate || 'Not set') +
+    ' | Status: ' + (task.done ? 'Done' : 'Active') +
+    ' | Created: ' + new Date(task.createdAt).toLocaleString();
+  document.getElementById('modal').classList.remove('hidden');
+}
+document.getElementById('modal-close')?.addEventListener('click', () => {
+  document.getElementById('modal').classList.add('hidden');
+});
+document.getElementById('modal')?.addEventListener('click', function(e) {
+  if (e.target === this) this.classList.add('hidden');
+});
