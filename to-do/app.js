@@ -363,3 +363,34 @@ function makeEditable(taskId, spanEl) {
   input.addEventListener('blur', save);
   input.addEventListener('keydown', e => { if(e.key==='Enter'){e.preventDefault();save();} if(e.key==='Escape') renderTasks(); });
 }
+
+// ── Confetti ──────────────────────────────────────────────────
+function launchConfetti() {
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  const pieces = Array.from({length:120}, () => ({
+    x: Math.random()*canvas.width, y: Math.random()*-canvas.height,
+    r: Math.random()*7+3, d: Math.random()*3+1,
+    color: 'hsl('+Math.floor(Math.random()*360)+',80%,60%)',
+    tilt: Math.random()*10-5
+  }));
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p => {
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,2*Math.PI);
+      ctx.fillStyle = p.color; ctx.fill();
+      p.y += p.d; p.x += Math.sin(frame*0.02+p.tilt)*1.5;
+    });
+    frame++;
+    if (frame < 200) requestAnimationFrame(draw); else canvas.remove();
+  }
+  draw();
+}
+function checkAllDone() {
+  const t = window._tasks||[];
+  if (t.length > 0 && t.every(x => x.done)) { launchConfetti(); showToast('🎉 All tasks complete!'); }
+}
