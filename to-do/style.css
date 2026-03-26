@@ -251,3 +251,13 @@ body.dark .priority-low    { background:#27ae6033; color:#6dd47e; }
 .empty-state { text-align:center; padding:48px 20px; color:#aaa; }
 .empty-state span { font-size:3rem; display:block; margin-bottom:12px; }
 body.dark .empty-state { color:#666; }
+
+/* ── Mobile ── */
+@media (max-width:600px) {
+  .app { margin:16px; padding:14px; }
+  header { flex-direction:column; gap:10px; }
+  .controls, .add-task { flex-direction:column; }
+  .task-item { flex-wrap:wrap; }
+  .task-actions { width:100%; justify-content:flex-end; }
+  .shortcut-hint { display:none; }
+}
