@@ -538,3 +538,20 @@ function undoDelete() {
   window._tasks.splice(_lastDeleted.idx,0,_lastDeleted.task);
   _lastDeleted=null; saveTasks(); renderTasks(); showToast('Task restored');
 }
+
+// ── Focus mode ────────────────────────────────────────────────
+let _focusMode=false;
+function toggleFocusMode() {
+  _focusMode=!_focusMode;
+  const btn=document.getElementById('focus-btn');
+  if (btn) btn.textContent=_focusMode?'👁 Show All':'🎯 Focus Mode';
+  renderTasks();
+  showToast(_focusMode?'Focus mode on':'Focus mode off');
+}
+(function addFocusButton(){
+  const header=document.querySelector('header');
+  if (!header) return;
+  const btn=document.createElement('button');
+  btn.id='focus-btn'; btn.textContent='🎯 Focus Mode'; btn.onclick=toggleFocusMode;
+  header.appendChild(btn);
+})();
