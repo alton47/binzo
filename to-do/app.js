@@ -565,3 +565,9 @@ function toggleFocusMode() {
     '<button onclick="this.parentNode.remove();localStorage.setItem(\'taskflow-welcomed\',\'1\')">Got it</button>';
   document.querySelector('.app')?.insertBefore(b,document.querySelector('.add-task'));
 })();
+
+// ── Tab title badge ───────────────────────────────────────────
+function updateTitleBadge() {
+  const active=(window._tasks||[]).filter(t=>!t.done).length;
+  document.title=active>0?'('+active+') TaskFlow':'TaskFlow';
+}
