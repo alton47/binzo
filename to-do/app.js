@@ -498,3 +498,7 @@ function updateProgress() {
   bar.style.width = pct+'%';
   bar.title = pct+'% complete';
 }
+
+// ── Hashtag tags ──────────────────────────────────────────────
+function parseTags(text) { return (text.match(/#\w+/g)||[]).map(t=>t.slice(1)); }
+function renderTags(tags) { return tags.map(t=>'<span class="tag">#'+t+'</span>').join(' '); }
