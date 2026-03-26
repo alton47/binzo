@@ -299,3 +299,7 @@ body.dark .tag { background:#1e3a6e; color:#7eb8f7; }
 .stats-panel { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
 .stat-chip { background:#f0f4ff; border-radius:20px; padding:4px 14px; font-size:0.8rem; color:#555; }
 body.dark .stat-chip { background:#2a2a4a; color:#aaa; }
+
+/* ── Welcome Banner ── */
+.welcome-banner { background:linear-gradient(135deg,#4a90e2,#7b2ff7); color:white; padding:14px 18px; border-radius:10px; margin-bottom:16px; font-size:0.9rem; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.welcome-banner button { background:rgba(255,255,255,0.25); color:white; border:1px solid rgba(255,255,255,0.5); }
