@@ -571,3 +571,13 @@ function updateTitleBadge() {
   const active=(window._tasks||[]).filter(t=>!t.done).length;
   document.title=active>0?'('+active+') TaskFlow':'TaskFlow';
 }
+
+// ── Relative time ─────────────────────────────────────────────
+function timeAgo(iso) {
+  const diff=Date.now()-new Date(iso).getTime();
+  const m=Math.floor(diff/60000),h=Math.floor(diff/3600000),d=Math.floor(diff/86400000);
+  if (m<1) return 'just now';
+  if (m<60) return m+'m ago';
+  if (h<24) return h+'h ago';
+  return d+'d ago';
+}
