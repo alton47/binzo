@@ -502,3 +502,12 @@ function updateProgress() {
 // ── Hashtag tags ──────────────────────────────────────────────
 function parseTags(text) { return (text.match(/#\w+/g)||[]).map(t=>t.slice(1)); }
 function renderTags(tags) { return tags.map(t=>'<span class="tag">#'+t+'</span>').join(' '); }
+
+// ── Copy to clipboard ─────────────────────────────────────────
+function copyTaskText(taskId) {
+  const task=(window._tasks||[]).find(t=>t.id===taskId);
+  if (!task) return;
+  navigator.clipboard.writeText(task.text)
+    .then(()=>showToast('📋 Copied to clipboard'))
+    .catch(()=>showToast('Copy failed'));
+}
