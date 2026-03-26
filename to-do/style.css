@@ -267,3 +267,6 @@ body.dark .empty-state { color:#666; }
 @keyframes fadeOut { from { opacity:1; } to { opacity:0; transform:scale(0.95); } }
 .task-item { animation:slideIn 0.22s ease; }
 .task-item.removing { animation:fadeOut 0.18s ease forwards; }
+
+/* ── Inline Edit ── */
+.inline-edit { flex:1; border:none; border-bottom:2px solid #4a90e2; background:transparent; font-size:1rem; color:inherit; outline:none; padding:2px 4px; }

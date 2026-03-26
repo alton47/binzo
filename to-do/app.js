@@ -347,3 +347,19 @@ function renderEmptyState(container, filtered) {
     : '<span>🔍</span><p>No tasks match your filters.</p>';
   container.appendChild(div);
 }
+
+// ── Inline Edit ───────────────────────────────────────────────
+function makeEditable(taskId, spanEl) {
+  const task = (window._tasks||[]).find(t => t.id === taskId);
+  if (!task) return;
+  const input = document.createElement('input');
+  input.type = 'text'; input.value = task.text; input.className = 'inline-edit';
+  spanEl.replaceWith(input); input.focus(); input.select();
+  function save() {
+    const v = input.value.trim();
+    if (v && v !== task.text) { task.text = v; saveTasks(); }
+    renderTasks();
+  }
+  input.addEventListener('blur', save);
+  input.addEventListener('keydown', e => { if(e.key==='Enter'){e.preventDefault();save();} if(e.key==='Escape') renderTasks(); });
+}
