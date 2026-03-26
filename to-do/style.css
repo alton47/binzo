@@ -273,3 +273,8 @@ body.dark .empty-state { color:#666; }
 
 /* ── Char Count ── */
 .char-count { font-size:0.75rem; color:#aaa; align-self:center; white-space:nowrap; }
+
+/* ── Bulk Bar ── */
+.bulk-bar { position:sticky; bottom:0; background:#4a90e2; color:#fff; padding:10px 16px; border-radius:8px 8px 0 0; display:flex; align-items:center; gap:10px; font-size:0.9rem; }
+.bulk-bar button { background:rgba(255,255,255,0.2); color:#fff; border:1px solid rgba(255,255,255,0.4); }
+.task-item.selected { outline:2px solid #4a90e2; }
