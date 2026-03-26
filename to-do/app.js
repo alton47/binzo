@@ -336,3 +336,14 @@ function showToast(msg, duration) {
   requestAnimationFrame(() => t.classList.add('toast-visible'));
   setTimeout(() => { t.classList.remove('toast-visible'); setTimeout(() => t.remove(), 300); }, duration);
 }
+
+// ── Empty State ───────────────────────────────────────────────
+function renderEmptyState(container, filtered) {
+  if (filtered.length > 0) return;
+  const div = document.createElement('div');
+  div.className = 'empty-state';
+  div.innerHTML = (window._tasks||[]).length === 0
+    ? '<span>🎉</span><p>No tasks yet! Add one above.</p>'
+    : '<span>🔍</span><p>No tasks match your filters.</p>';
+  container.appendChild(div);
+}
