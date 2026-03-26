@@ -239,3 +239,6 @@ body.dark .task-item.overdue-task { border-left: 3px solid #ff6b6b; }
 body.dark .priority-high   { background:#c0392b33; color:#ff6b6b; }
 body.dark .priority-medium { background:#b7770d33; color:#f0c040; }
 body.dark .priority-low    { background:#27ae6033; color:#6dd47e; }
+
+/* ── Shortcut Hint ── */
+.shortcut-hint { position:fixed; bottom:16px; right:20px; background:rgba(30,30,50,0.85); color:#ccc; padding:6px 14px; border-radius:20px; font-size:0.75rem; pointer-events:none; }
