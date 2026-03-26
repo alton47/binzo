@@ -191,3 +191,19 @@ function escapeHTML(str) {
 
 // ── Init ──────────────────────────────────────────────────────
 renderTasks();
+
+// ── Dark Mode ─────────────────────────────────────────────────
+(function initTheme() {
+  const saved = localStorage.getItem('taskflow-theme');
+  if (saved === 'dark') {
+    document.body.classList.add('dark');
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = '☀️ Light Mode';
+  }
+})();
+document.getElementById('theme-toggle')?.addEventListener('click', function() {
+  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  this.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+  localStorage.setItem('taskflow-theme', isDark ? 'dark' : 'light');
+});
