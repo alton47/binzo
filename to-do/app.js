@@ -424,3 +424,18 @@ function scrollToLatest() {
     if (len > 100) input.value = input.value.slice(0, 100);
   });
 })();
+
+// ── Sort tasks ────────────────────────────────────────────────
+function sortTasks(tasks, method) {
+  const copy = [...tasks];
+  if (method === 'priority') {
+    const w = { high:0, medium:1, low:2 };
+    return copy.sort((a,b) => (w[a.priority]??3)-(w[b.priority]??3));
+  }
+  if (method === 'due') return copy.sort((a,b) => {
+    if (!a.dueDate) return 1; if (!b.dueDate) return -1;
+    return new Date(a.dueDate)-new Date(b.dueDate);
+  });
+  if (method === 'alpha') return copy.sort((a,b) => a.text.localeCompare(b.text));
+  return copy;
+}
