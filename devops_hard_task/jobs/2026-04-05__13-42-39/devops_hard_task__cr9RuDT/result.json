@@ -1,0 +1,89 @@
+{
+    "id": "d2277cae-a20a-4daf-ad83-3d8306f503e9",
+    "task_name": "devops_hard_task/devops_hard_task",
+    "trial_name": "devops_hard_task__cr9RuDT",
+    "trial_uri": "file:///Users/faza/Documents/Dev/binzo/devops_hard_task/jobs/2026-04-05__13-42-39/devops_hard_task__cr9RuDT",
+    "task_id": {
+        "path": "."
+    },
+    "source": null,
+    "task_checksum": "58e56c9e74e66a87eada8baa3b0fa3f4eb6caed2f895344e846bc0fe80dca24d",
+    "config": {
+        "task": {
+            "path": ".",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "devops_hard_task__cr9RuDT",
+        "trials_dir": "jobs/2026-04-05__13-42-39",
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "terminus-2",
+            "import_path": null,
+            "model_name": "groq/moonshotai/kimi-k2-instruct-0905",
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "kwargs": {},
+            "env": {}
+        },
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "suppress_override_warnings": false,
+            "mounts_json": null,
+            "env": {},
+            "kwargs": {}
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "job_id": "abef902d-c500-4107-842b-eb3c74626141"
+    },
+    "agent_info": {
+        "name": "terminus-2",
+        "version": "2.0.0",
+        "model_info": {
+            "name": "moonshotai/kimi-k2-instruct-0905",
+            "provider": "groq"
+        }
+    },
+    "agent_result": null,
+    "verifier_result": null,
+    "exception_info": {
+        "exception_type": "RuntimeError",
+        "exception_message": "devops_hard_task__cr9RuDT: failed to send non-blocking keys: None",
+        "exception_traceback": "Traceback (most recent call last):\n  File \"/Users/faza/.local/share/uv/tools/harbor/lib/python3.12/site-packages/harbor/trial/trial.py\", line 533, in run\n    await self._setup_agent()\n  File \"/Users/faza/.local/share/uv/tools/harbor/lib/python3.12/site-packages/harbor/trial/trial.py\", line 266, in _setup_agent\n    await asyncio.wait_for(\n  File \"/Users/faza/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/asyncio/tasks.py\", line 520, in wait_for\n    return await fut\n           ^^^^^^^^^\n  File \"/Users/faza/.local/share/uv/tools/harbor/lib/python3.12/site-packages/harbor/agents/terminus_2/terminus_2.py\", line 368, in setup\n    await self._session.start()\n  File \"/Users/faza/.local/share/uv/tools/harbor/lib/python3.12/site-packages/harbor/agents/terminus_2/tmux_session.py\", line 457, in start\n    await self.send_keys(\n  File \"/Users/faza/.local/share/uv/tools/harbor/lib/python3.12/site-packages/harbor/agents/terminus_2/tmux_session.py\", line 656, in send_keys\n    await self._send_non_blocking_keys(\n  File \"/Users/faza/.local/share/uv/tools/harbor/lib/python3.12/site-packages/harbor/agents/terminus_2/tmux_session.py\", line 609, in _send_non_blocking_keys\n    raise RuntimeError(\nRuntimeError: devops_hard_task__cr9RuDT: failed to send non-blocking keys: None\n",
+        "occurred_at": "2026-04-05T13:48:17.910172"
+    },
+    "started_at": "2026-04-05T10:43:14.356597Z",
+    "finished_at": "2026-04-05T10:48:43.427556Z",
+    "environment_setup": {
+        "started_at": "2026-04-05T10:43:15.528215Z",
+        "finished_at": "2026-04-05T10:43:31.501021Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-04-05T10:43:31.502317Z",
+        "finished_at": "2026-04-05T10:48:17.760943Z"
+    },
+    "agent_execution": null,
+    "verifier": null
+}
